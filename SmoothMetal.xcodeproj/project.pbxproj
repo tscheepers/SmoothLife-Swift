@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		760F67D025AC902E006DE2B7 /* GameOfLife.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760F67CF25AC902E006DE2B7 /* GameOfLife.swift */; };
+		763C928F25ADB4F700E78004 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 763C928E25ADB4F700E78004 /* Shaders.metal */; };
+		763C929325ADB50300E78004 /* SmoothLife.swift in Sources */ = {isa = PBXBuildFile; fileRef = 763C929225ADB50300E78004 /* SmoothLife.swift */; };
+		7680787D25B5976500C8FD26 /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7680787C25B5976500C8FD26 /* Matrix.swift */; };
+		7680789325B5FE2A00C8FD26 /* Complex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7680789225B5FE2A00C8FD26 /* Complex.swift */; };
 		76B91E862590FC2800AC8893 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76B91E852590FC2800AC8893 /* Metal.framework */; };
 		76B91E892590FE0400AC8893 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 76B91E882590FE0400AC8893 /* Shaders.metal */; };
 		76B91E8D259101D800AC8893 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 76B91E8C259101D800AC8893 /* LaunchScreen.storyboard */; };
@@ -18,6 +22,10 @@
 
 /* Begin PBXFileReference section */
 		760F67CF25AC902E006DE2B7 /* GameOfLife.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOfLife.swift; sourceTree = "<group>"; };
+		763C928E25ADB4F700E78004 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		763C929225ADB50300E78004 /* SmoothLife.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmoothLife.swift; sourceTree = "<group>"; };
+		7680787C25B5976500C8FD26 /* Matrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
+		7680789225B5FE2A00C8FD26 /* Complex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Complex.swift; sourceTree = "<group>"; };
 		76B91E852590FC2800AC8893 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		76B91E882590FE0400AC8893 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		76B91E8C259101D800AC8893 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -49,6 +57,17 @@
 			path = GameOfLife;
 			sourceTree = "<group>";
 		};
+		763C928D25ADB4E400E78004 /* SmoothLife */ = {
+			isa = PBXGroup;
+			children = (
+				763C928E25ADB4F700E78004 /* Shaders.metal */,
+				763C929225ADB50300E78004 /* SmoothLife.swift */,
+				7680787C25B5976500C8FD26 /* Matrix.swift */,
+				7680789225B5FE2A00C8FD26 /* Complex.swift */,
+			);
+			path = SmoothLife;
+			sourceTree = "<group>";
+		};
 		76B91E842590FC2800AC8893 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -77,6 +96,7 @@
 		76F9B5C22590CC4D000D403C /* SmoothMetal */ = {
 			isa = PBXGroup;
 			children = (
+				763C928D25ADB4E400E78004 /* SmoothLife */,
 				760F67D225ACAC33006DE2B7 /* GameOfLife */,
 				76F9B5C32590CC4D000D403C /* AppDelegate.swift */,
 				76F9B5C72590CC4D000D403C /* ViewController.swift */,
@@ -103,6 +123,8 @@
 			dependencies = (
 			);
 			name = SmoothMetal;
+			packageProductDependencies = (
+			);
 			productName = SmoothMetal;
 			productReference = 76F9B5C02590CC4D000D403C /* SmoothMetal.app */;
 			productType = "com.apple.product-type.application";
@@ -130,6 +152,8 @@
 				Base,
 			);
 			mainGroup = 76F9B5B72590CC4D000D403C;
+			packageReferences = (
+			);
 			productRefGroup = 76F9B5C12590CC4D000D403C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -156,10 +180,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7680789325B5FE2A00C8FD26 /* Complex.swift in Sources */,
+				7680787D25B5976500C8FD26 /* Matrix.swift in Sources */,
 				760F67D025AC902E006DE2B7 /* GameOfLife.swift in Sources */,
 				76B91E892590FE0400AC8893 /* Shaders.metal in Sources */,
 				76F9B5C82590CC4D000D403C /* ViewController.swift in Sources */,
+				763C929325ADB50300E78004 /* SmoothLife.swift in Sources */,
 				76F9B5C42590CC4D000D403C /* AppDelegate.swift in Sources */,
+				763C928F25ADB4F700E78004 /* Shaders.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

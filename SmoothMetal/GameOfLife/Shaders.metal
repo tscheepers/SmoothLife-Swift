@@ -16,12 +16,12 @@ vertex Vertex gol_vertex_shader(constant float4 *vertices [[buffer(0)]],
 }
 
 fragment float4 gol_fragment_shader(Vertex vtx [[stage_in]],
-                                    texture2d<uint> generation [[texture(0)]])
+                                    texture2d<uint> current [[texture(0)]])
 {
     constexpr sampler smplr(coord::normalized,
                           address::clamp_to_zero,
                           filter::nearest);
-    uint cell = generation.sample(smplr, vtx.uv).r;
+    uint cell = current.sample(smplr, vtx.uv).r;
     return float4(cell);
 }
 

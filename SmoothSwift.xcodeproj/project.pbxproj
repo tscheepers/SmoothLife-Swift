@@ -9,11 +9,11 @@
 /* Begin PBXBuildFile section */
 		760F67D025AC902E006DE2B7 /* GameOfLife.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760F67CF25AC902E006DE2B7 /* GameOfLife.swift */; };
 		762A485025B71CFD0084EBD4 /* MatrixTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762A484F25B71CFD0084EBD4 /* MatrixTests.swift */; };
+		762FE36F25B7883A004C6E43 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 762FE36E25B7883A004C6E43 /* README.md */; };
 		763C928F25ADB4F700E78004 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 763C928E25ADB4F700E78004 /* Shaders.metal */; };
 		763C929325ADB50300E78004 /* SmoothLifeRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 763C929225ADB50300E78004 /* SmoothLifeRenderer.swift */; };
 		7680787D25B5976500C8FD26 /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7680787C25B5976500C8FD26 /* Matrix.swift */; };
 		7680789325B5FE2A00C8FD26 /* Complex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7680789225B5FE2A00C8FD26 /* Complex.swift */; };
-		76884BFA25B706140088D5F1 /* SmoothMetalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76884BF925B706140088D5F1 /* SmoothMetalTests.swift */; };
 		76884C0525B7062E0088D5F1 /* SmoothLifeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76884C0425B7062E0088D5F1 /* SmoothLifeTests.swift */; };
 		76884C0D25B708190088D5F1 /* SmoothLife.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76884C0C25B708190088D5F1 /* SmoothLife.swift */; };
 		76884C1025B70ABD0088D5F1 /* SmoothLife.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76884C0C25B708190088D5F1 /* SmoothLife.swift */; };
@@ -41,12 +41,12 @@
 /* Begin PBXFileReference section */
 		760F67CF25AC902E006DE2B7 /* GameOfLife.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOfLife.swift; sourceTree = "<group>"; };
 		762A484F25B71CFD0084EBD4 /* MatrixTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixTests.swift; sourceTree = "<group>"; };
+		762FE36E25B7883A004C6E43 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		763C928E25ADB4F700E78004 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		763C929225ADB50300E78004 /* SmoothLifeRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmoothLifeRenderer.swift; sourceTree = "<group>"; };
 		7680787C25B5976500C8FD26 /* Matrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
 		7680789225B5FE2A00C8FD26 /* Complex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Complex.swift; sourceTree = "<group>"; };
-		76884BF725B706140088D5F1 /* SmoothMetalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmoothMetalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		76884BF925B706140088D5F1 /* SmoothMetalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmoothMetalTests.swift; sourceTree = "<group>"; };
+		76884BF725B706140088D5F1 /* SmoothSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmoothSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		76884BFB25B706140088D5F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		76884C0425B7062E0088D5F1 /* SmoothLifeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmoothLifeTests.swift; sourceTree = "<group>"; };
 		76884C0C25B708190088D5F1 /* SmoothLife.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmoothLife.swift; sourceTree = "<group>"; };
@@ -54,7 +54,7 @@
 		76B91E852590FC2800AC8893 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		76B91E882590FE0400AC8893 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		76B91E8C259101D800AC8893 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
-		76F9B5C02590CC4D000D403C /* SmoothMetal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmoothMetal.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		76F9B5C02590CC4D000D403C /* SmoothSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmoothSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76F9B5C32590CC4D000D403C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		76F9B5C72590CC4D000D403C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		76F9B5CC2590CC4E000D403C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -101,14 +101,13 @@
 			path = SmoothLife;
 			sourceTree = "<group>";
 		};
-		76884BF825B706140088D5F1 /* SmoothMetalTests */ = {
+		76884BF825B706140088D5F1 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
 				76884C0325B7061C0088D5F1 /* SmoothLife */,
-				76884BF925B706140088D5F1 /* SmoothMetalTests.swift */,
 				76884BFB25B706140088D5F1 /* Info.plist */,
 			);
-			path = SmoothMetalTests;
+			path = Tests;
 			sourceTree = "<group>";
 		};
 		76884C0325B7061C0088D5F1 /* SmoothLife */ = {
@@ -132,8 +131,9 @@
 		76F9B5B72590CC4D000D403C = {
 			isa = PBXGroup;
 			children = (
-				76F9B5C22590CC4D000D403C /* SmoothMetal */,
-				76884BF825B706140088D5F1 /* SmoothMetalTests */,
+				762FE36E25B7883A004C6E43 /* README.md */,
+				76F9B5C22590CC4D000D403C /* Source */,
+				76884BF825B706140088D5F1 /* Tests */,
 				76F9B5C12590CC4D000D403C /* Products */,
 				76B91E842590FC2800AC8893 /* Frameworks */,
 			);
@@ -142,13 +142,13 @@
 		76F9B5C12590CC4D000D403C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				76F9B5C02590CC4D000D403C /* SmoothMetal.app */,
-				76884BF725B706140088D5F1 /* SmoothMetalTests.xctest */,
+				76F9B5C02590CC4D000D403C /* SmoothSwift.app */,
+				76884BF725B706140088D5F1 /* SmoothSwiftTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		76F9B5C22590CC4D000D403C /* SmoothMetal */ = {
+		76F9B5C22590CC4D000D403C /* Source */ = {
 			isa = PBXGroup;
 			children = (
 				763C928D25ADB4E400E78004 /* SmoothLife */,
@@ -159,15 +159,15 @@
 				76F9B5D12590CC4E000D403C /* Info.plist */,
 				76B91E8C259101D800AC8893 /* LaunchScreen.storyboard */,
 			);
-			path = SmoothMetal;
+			path = Source;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		76884BF625B706140088D5F1 /* SmoothMetalTests */ = {
+		76884BF625B706140088D5F1 /* SmoothSwiftTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 76884C0025B706140088D5F1 /* Build configuration list for PBXNativeTarget "SmoothMetalTests" */;
+			buildConfigurationList = 76884C0025B706140088D5F1 /* Build configuration list for PBXNativeTarget "SmoothSwiftTests" */;
 			buildPhases = (
 				76884BF325B706140088D5F1 /* Sources */,
 				76884BF425B706140088D5F1 /* Frameworks */,
@@ -178,14 +178,14 @@
 			dependencies = (
 				76884BFD25B706140088D5F1 /* PBXTargetDependency */,
 			);
-			name = SmoothMetalTests;
+			name = SmoothSwiftTests;
 			productName = SmoothMetalTests;
-			productReference = 76884BF725B706140088D5F1 /* SmoothMetalTests.xctest */;
+			productReference = 76884BF725B706140088D5F1 /* SmoothSwiftTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		76F9B5BF2590CC4D000D403C /* SmoothMetal */ = {
+		76F9B5BF2590CC4D000D403C /* SmoothSwift */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 76F9B5D42590CC4E000D403C /* Build configuration list for PBXNativeTarget "SmoothMetal" */;
+			buildConfigurationList = 76F9B5D42590CC4E000D403C /* Build configuration list for PBXNativeTarget "SmoothSwift" */;
 			buildPhases = (
 				76F9B5BC2590CC4D000D403C /* Sources */,
 				76F9B5BD2590CC4D000D403C /* Frameworks */,
@@ -195,11 +195,11 @@
 			);
 			dependencies = (
 			);
-			name = SmoothMetal;
+			name = SmoothSwift;
 			packageProductDependencies = (
 			);
 			productName = SmoothMetal;
-			productReference = 76F9B5C02590CC4D000D403C /* SmoothMetal.app */;
+			productReference = 76F9B5C02590CC4D000D403C /* SmoothSwift.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -220,7 +220,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 76F9B5BB2590CC4D000D403C /* Build configuration list for PBXProject "SmoothMetal" */;
+			buildConfigurationList = 76F9B5BB2590CC4D000D403C /* Build configuration list for PBXProject "SmoothSwift" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -235,8 +235,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				76F9B5BF2590CC4D000D403C /* SmoothMetal */,
-				76884BF625B706140088D5F1 /* SmoothMetalTests */,
+				76F9B5BF2590CC4D000D403C /* SmoothSwift */,
+				76884BF625B706140088D5F1 /* SmoothSwiftTests */,
 			);
 		};
 /* End PBXProject section */
@@ -253,6 +253,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				762FE36F25B7883A004C6E43 /* README.md in Resources */,
 				76B91E8D259101D800AC8893 /* LaunchScreen.storyboard in Resources */,
 				76F9B5CD2590CC4E000D403C /* Assets.xcassets in Resources */,
 			);
@@ -268,7 +269,6 @@
 				76884C1725B70CEE0088D5F1 /* Matrix.swift in Sources */,
 				762A485025B71CFD0084EBD4 /* MatrixTests.swift in Sources */,
 				76884C1025B70ABD0088D5F1 /* SmoothLife.swift in Sources */,
-				76884BFA25B706140088D5F1 /* SmoothMetalTests.swift in Sources */,
 				76884C1A25B70CF20088D5F1 /* Complex.swift in Sources */,
 				76884C0525B7062E0088D5F1 /* SmoothLifeTests.swift in Sources */,
 				76884C1E25B7121D0088D5F1 /* Fixtures.swift in Sources */,
@@ -296,7 +296,7 @@
 /* Begin PBXTargetDependency section */
 		76884BFD25B706140088D5F1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 76F9B5BF2590CC4D000D403C /* SmoothMetal */;
+			target = 76F9B5BF2590CC4D000D403C /* SmoothSwift */;
 			targetProxy = 76884BFC25B706140088D5F1 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -308,17 +308,17 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = HNWHS97623;
-				INFOPLIST_FILE = SmoothMetalTests/Info.plist;
+				INFOPLIST_FILE = SmoothSwiftTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ai.thijs.SmoothMetalTests;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.thijs.SmoothSwiftTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmoothMetal.app/SmoothMetal";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmoothSwift.app/SmoothSwift";
 			};
 			name = Debug;
 		};
@@ -328,17 +328,17 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = HNWHS97623;
-				INFOPLIST_FILE = SmoothMetalTests/Info.plist;
+				INFOPLIST_FILE = SmoothSwiftTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ai.thijs.SmoothMetalTests;
+				PRODUCT_BUNDLE_IDENTIFIER = ai.thijs.SmoothSwiftTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmoothMetal.app/SmoothMetal";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmoothSwift.app/SmoothSwift";
 			};
 			name = Release;
 		};
@@ -465,7 +465,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = HNWHS97623;
-				INFOPLIST_FILE = SmoothMetal/Info.plist;
+				INFOPLIST_FILE = SmoothSwift/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -484,7 +484,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = HNWHS97623;
-				INFOPLIST_FILE = SmoothMetal/Info.plist;
+				INFOPLIST_FILE = SmoothSwift/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -499,7 +499,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		76884C0025B706140088D5F1 /* Build configuration list for PBXNativeTarget "SmoothMetalTests" */ = {
+		76884C0025B706140088D5F1 /* Build configuration list for PBXNativeTarget "SmoothSwiftTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				76884BFE25B706140088D5F1 /* Debug */,
@@ -508,7 +508,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		76F9B5BB2590CC4D000D403C /* Build configuration list for PBXProject "SmoothMetal" */ = {
+		76F9B5BB2590CC4D000D403C /* Build configuration list for PBXProject "SmoothSwift" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				76F9B5D22590CC4E000D403C /* Debug */,
@@ -517,7 +517,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		76F9B5D42590CC4E000D403C /* Build configuration list for PBXNativeTarget "SmoothMetal" */ = {
+		76F9B5D42590CC4E000D403C /* Build configuration list for PBXNativeTarget "SmoothSwift" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				76F9B5D52590CC4E000D403C /* Debug */,

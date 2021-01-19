@@ -1,10 +1,3 @@
-//
-//  Fixtures.swift
-//  SmoothMetalTests
-//
-//  Created by Thijs on 19/01/2021.
-//
-
 import Foundation
 
 struct Fixtures {

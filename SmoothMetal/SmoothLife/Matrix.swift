@@ -76,11 +76,240 @@ extension Matrix: CustomDebugStringConvertible {
     }
 }
 
+// MARK: - Double
+extension Matrix where T == Double {
+
+    /// The sum of the matrix
+    var sum: T {
+        return flat.reduce(0.0, { $0 + $1 })
+    }
+
+    func fft(_ direction: vDSP.FourierTransformDirection = .forward) -> Matrix<ComplexDouble> {
+        return self.complex.fft(direction)
+    }
+
+    var complex: Matrix<ComplexDouble> {
+        return self.map({ ComplexDouble($0, 0.0) })
+    }
+
+    func hardStep(_ boundary: T = 0.5) -> Matrix<T> {
+        return self.map { (value) -> T in
+            if value > boundary {
+                return 1.0
+            } else {
+                return 0.0
+            }
+        }
+    }
+
+    func clamp(_ between: (T, T) = (0.0, 1.0)) -> Matrix<T> {
+        return self.map { (value) -> T in
+            if value < between.0 {
+                return between.0
+            } else if value > between.1 {
+                return between.1
+            }
+            return value
+        }
+    }
+
+    /// Returns two grids in the style:
+    /// ```
+    /// [[0, 0, 0, 0, 0],
+    ///  [1, 1, 1, 1, 1],
+    ///  [2, 2, 2, 2, 2],
+    ///  [3, 3, 3, 3, 3],
+    ///  [4, 4, 4, 4, 4]]
+    /// and
+    /// [[0, 1, 2, 3, 4],
+    ///  [0, 1, 2, 3, 4],
+    ///  [0, 1, 2, 3, 4],
+    ///  [0, 1, 2, 3, 4],
+    ///  [0, 1, 2, 3, 4]]
+    /// ```
+    static func meshGrid(shape: (height: Int, width: Int)) -> (Matrix<T>, Matrix<T>) {
+
+        let n = shape.height * shape.width
+        var xs = [T](repeating: T.zero, count: n)
+        var ys = [T](repeating: T.zero, count: n)
+
+        for i in 0..<n {
+            xs[i] = T(i / shape.width)
+            ys[i] = T(i % shape.width)
+        }
+
+        return (Matrix<T>(shape: shape, flat: xs), Matrix<T>(shape: shape, flat: ys))
+    }
+
+    func fill(texture: MTLTexture) {
+        self.map({ Float($0) }).fill(texture: texture)
+    }
+
+    // MARK: Fast vDSP methods specific to Double
+    // PLUS
+    static func + (lhs: Matrix<T>, rhs: Matrix<T>) -> Matrix<T> {
+        assert(lhs.shape == rhs.shape, "Shapes invalid")
+        var result = Matrix.zeros(shape: lhs.shape)
+        rhs.flat.withUnsafeBufferPointer{ srcR in
+            lhs.flat.withUnsafeBufferPointer{ srcL in
+                result.flat.withUnsafeMutableBufferPointer{ dst in
+                    vDSP_vaddD(srcR.baseAddress!, 1, srcL.baseAddress!, 1, dst.baseAddress!, 1, vDSP_Length(lhs.n))
+                }
+            }
+        }
+        return result
+    }
+    static func + (lhs: Matrix<T>, rhs: T) -> Matrix<T> {
+        var result = lhs
+        lhs.flat.withUnsafeBufferPointer{ src in
+            result.flat.withUnsafeMutableBufferPointer{ dst in
+                var scalar = rhs
+                vDSP_vsaddD(src.baseAddress!, 1, &scalar, dst.baseAddress!, 1, vDSP_Length(lhs.n))
+            }
+        }
+        return result
+    }
+    static func + (lhs: T, rhs: Matrix<T>) -> Matrix<T> {
+        return rhs + lhs
+    }
+
+    // MINUS
+    static func - (lhs: Matrix<T>, rhs: Matrix<T>) -> Matrix<T> {
+        assert(lhs.shape == rhs.shape, "Shapes invalid")
+        var result = Matrix.zeros(shape: lhs.shape)
+        rhs.flat.withUnsafeBufferPointer{ srcR in
+            lhs.flat.withUnsafeBufferPointer{ srcL in
+                result.flat.withUnsafeMutableBufferPointer{ dst in
+                    vDSP_vsubD(srcR.baseAddress!, 1, srcL.baseAddress!, 1, dst.baseAddress!, 1, vDSP_Length(lhs.n))
+                }
+            }
+        }
+        return result
+    }
+    static func - (lhs: Matrix<T>, rhs: T) -> Matrix<T> {
+        return lhs + (-rhs)
+    }
+    static func - (lhs: T, rhs: Matrix<T>) -> Matrix<T> {
+        var result = rhs
+        result.flat.withUnsafeMutableBufferPointer{ dst in
+            var scalar = lhs
+            let length = vDSP_Length(rhs.n)
+            vDSP_vnegD(dst.baseAddress!, 1, dst.baseAddress!, 1, length)
+            vDSP_vsaddD(dst.baseAddress!, 1, &scalar, dst.baseAddress!, 1, length)
+        }
+        return result
+    }
+
+    // TIMES
+    static func * (lhs: Matrix<T>, rhs: Matrix<T>) -> Matrix<T> {
+        assert(lhs.shape == rhs.shape, "Shapes invalid")
+        var result = Matrix.zeros(shape: lhs.shape)
+        rhs.flat.withUnsafeBufferPointer{ srcR in
+            lhs.flat.withUnsafeBufferPointer{ srcL in
+                result.flat.withUnsafeMutableBufferPointer{ dst in
+                    vDSP_vmulD(srcR.baseAddress!, 1, srcL.baseAddress!, 1, dst.baseAddress!, 1, vDSP_Length(lhs.n))
+                }
+            }
+        }
+        return result
+    }
+    static func * (lhs: Matrix<T>, rhs: T) -> Matrix<T> where T == Double {
+        var result = lhs
+        lhs.flat.withUnsafeBufferPointer{ src in
+            result.flat.withUnsafeMutableBufferPointer{ dst in
+                var scalar = rhs
+                vDSP_vsmulD(src.baseAddress!, 1, &scalar, dst.baseAddress!, 1, vDSP_Length(lhs.n))
+            }
+        }
+        return result
+    }
+    static func * (lhs: T, rhs: Matrix<T>) -> Matrix<T> {
+        return rhs * lhs
+    }
+
+    // DIVIDE
+    static func / (lhs: Matrix<T>, rhs: Matrix<T>) -> Matrix<T> {
+        assert(lhs.shape == rhs.shape, "Shapes invalid")
+        var result = Matrix.zeros(shape: lhs.shape)
+        rhs.flat.withUnsafeBufferPointer{ srcR in
+            lhs.flat.withUnsafeBufferPointer{ srcL in
+                result.flat.withUnsafeMutableBufferPointer{ dst in
+                    vDSP_vdivD(srcR.baseAddress!, 1, srcL.baseAddress!, 1, dst.baseAddress!, 1, vDSP_Length(lhs.n))
+                }
+            }
+        }
+        return result
+    }
+    static func / (lhs: Matrix<T>, rhs: T) -> Matrix<T> {
+        var result = lhs
+        lhs.flat.withUnsafeBufferPointer{ src in
+            result.flat.withUnsafeMutableBufferPointer{ dst in
+                var scalar = rhs
+                vDSP_vsdivD(src.baseAddress!, 1, &scalar, dst.baseAddress!, 1, vDSP_Length(lhs.n))
+            }
+        }
+        return result
+    }
+    static func / (lhs: T, rhs: Matrix<T>) -> Matrix<T> {
+        var result = rhs
+        rhs.flat.withUnsafeBufferPointer{ src in
+            result.flat.withUnsafeMutableBufferPointer{ dst in
+                var scalar = lhs
+                vDSP_svdivD(&scalar, src.baseAddress!, 1, dst.baseAddress!, 1, vDSP_Length(rhs.n))
+            }
+        }
+        return result
+    }
+}
+
+/// Power function
+func pow(_ x: Matrix<Double>, power: Double) -> Matrix<Double> {
+    var result = x
+    x.flat.withUnsafeBufferPointer { src in
+        result.flat.withUnsafeMutableBufferPointer { dst in
+            if power == 2 {
+                vDSP_vsqD(src.baseAddress!, 1, dst.baseAddress!, 1, vDSP_Length(x.width * x.height))
+            } else {
+                var size = Int32(x.width * x.height)
+                var exponent = power
+                vvpows(dst.baseAddress!, &exponent, src.baseAddress!, &size)
+            }
+        }
+    }
+    return result
+}
+
+/// Square root function
+func sqrt(_ x: Matrix<Double>) -> Matrix<Double> {
+    var result = x
+    x.flat.withUnsafeBufferPointer { src in
+        result.flat.withUnsafeMutableBufferPointer { dst in
+            var size = Int32(x.width * x.height)
+            vvsqrt(dst.baseAddress!, src.baseAddress!, &size)
+        }
+    }
+    return result
+}
+
+/// Exponential function
+func exp(_ x: Matrix<Double>) -> Matrix<Double> {
+    var result = x
+    x.flat.withUnsafeBufferPointer { src in
+        result.flat.withUnsafeMutableBufferPointer { dst in
+            var size = Int32(x.width * x.height)
+            vvexp(dst.baseAddress!, src.baseAddress!, &size)
+        }
+    }
+    return result
+}
+
 // MARK: - Complex
 extension Matrix where T == ComplexDouble {
     var real: Matrix<Double> {
         return self.map({ $0.real })
     }
+
+    // MARK: Fast vDSP methods specific to ComplexDouble
 
     func fft(_ direction: vDSP.FourierTransformDirection = .forward) -> Matrix<ComplexDouble> {
 
@@ -118,65 +347,24 @@ extension Matrix where T == ComplexDouble {
 
         return Matrix<ComplexDouble>(shape: shape, flat: flat)
     }
-}
 
-// MARK: - Floating point matrices
-extension Matrix where T == Double {
-
-    /// The sum of the matrix
-    var sum: T {
-        return flat.reduce(0.0, { $0 + $1 })
-    }
-
-    /// Fill a metal texture with the matrix
-    func fill(texture: MTLTexture) {
-        texture.replace(
-            region: MTLRegionMake2D(0, 0, width, height),
-            mipmapLevel: 0,
-            withBytes: flat.map({ Float($0) }),
-            bytesPerRow: width * MemoryLayout<Float>.stride
-        )
-    }
-
-    func fft(_ direction: vDSP.FourierTransformDirection = .forward) -> Matrix<ComplexDouble> {
-        return self.complex.fft(direction)
-    }
-
-    var complex: Matrix<ComplexDouble> {
-        return self.map({ ComplexDouble($0, 0.0) })
-    }
-
-    func hardStep(_ boundary: Double = 0.5) -> Matrix<Double> {
-        return self.map { (value) -> Double in
-            if value > boundary {
-                return 1.0
-            } else {
-                return 0.0
-            }
-        }
-    }
-
-    func clamp(_ between: (Double, Double) = (0.0, 1.0)) -> Matrix<Double> {
-        return self.map { (value) -> Double in
-            if value < between.0 {
-                return between.0
-            } else if value > between.1 {
-                return between.1
-            }
-            return value
-        }
+    // TIMES
+    static func * (lhs: Matrix<T>, rhs: Matrix<T>) -> Matrix<T> {
+        assert(lhs.shape == rhs.shape, "Shapes invalid")
+        return Matrix(shape: lhs.shape, flat: zip(lhs.flat, rhs.flat).map({ $0.0 * $0.1 }))
     }
 }
 
+// MARK: - Float
 extension Matrix where T == Float {
 
-    static func copy(fromTexture texture: MTLTexture) -> Matrix<Float> {
+    static func copy(fromTexture texture: MTLTexture) -> Matrix<T> {
 
         let n =  texture.height * texture.width
-        let pointer = UnsafeMutableRawPointer.allocate(byteCount: n * MemoryLayout<Float>.stride, alignment: MemoryLayout<Float>.alignment)
+        let pointer = UnsafeMutableRawPointer.allocate(byteCount: n * MemoryLayout<T>.stride, alignment: MemoryLayout<T>.alignment)
         texture.getBytes(
             pointer,
-            bytesPerRow: texture.width * MemoryLayout<Float>.stride,
+            bytesPerRow: texture.width * MemoryLayout<T>.stride,
             from: MTLRegionMake2D(0, 0, texture.width, texture.height),
             mipmapLevel: 0
         )
@@ -185,7 +373,17 @@ extension Matrix where T == Float {
 
         let flat = Array(UnsafeBufferPointer(start: typedPointer, count: n))
 
-        return Matrix<Float>(shape: (height: texture.height, width: texture.width), flat: flat)
+        return Matrix<T>(shape: (height: texture.height, width: texture.width), flat: flat)
+    }
+
+    /// Fill a metal texture with the matrix
+    func fill(texture: MTLTexture) {
+        texture.replace(
+            region: MTLRegionMake2D(0, 0, width, height),
+            mipmapLevel: 0,
+            withBytes: flat,
+            bytesPerRow: width * MemoryLayout<T>.stride
+        )
     }
 }
 
@@ -198,104 +396,60 @@ extension Matrix {
         return Matrix<T>(shape: shape, flat: flat)
     }
 
-    /// Returns two grids in the style:
-    /// ```
-    /// [[0, 0, 0, 0, 0],
-    ///  [1, 1, 1, 1, 1],
-    ///  [2, 2, 2, 2, 2],
-    ///  [3, 3, 3, 3, 3],
-    ///  [4, 4, 4, 4, 4]]
-    /// and
-    /// [[0, 1, 2, 3, 4],
-    ///  [0, 1, 2, 3, 4],
-    ///  [0, 1, 2, 3, 4],
-    ///  [0, 1, 2, 3, 4],
-    ///  [0, 1, 2, 3, 4]]
-    /// ```
-    static func meshGrid(shape: (height: Int, width: Int)) -> (Matrix<Double>, Matrix<Double>) {
-
-        let n = shape.height * shape.width
-        var xs = [Double](repeating: Double.zero, count: n)
-        var ys = [Double](repeating: Double.zero, count: n)
-
-        for i in 0..<n {
-            xs[i] = Double(i / shape.width)
-            ys[i] = Double(i % shape.width)
-        }
-
-        return (Matrix<Double>(shape: shape, flat: xs), Matrix<Double>(shape: shape, flat: ys))
-    }
 }
 
 // MARK: - Elementwise operators
 extension Matrix where T : AdditiveArithmetic {
 
-    
     // PLUS
     static func + (lhs: Matrix<T>, rhs: Matrix<T>) -> Matrix<T> {
-        assert(lhs.shape == rhs.shape, "Shapes not valid")
+        assert(lhs.shape == rhs.shape, "Shapes invalid")
         return Matrix(shape: lhs.shape, flat: zip(lhs.flat, rhs.flat).map({ $0.0 + $0.1 }))
-    }
-    static func + (lhs: T, rhs: Matrix<T>) -> Matrix<T> {
-        return rhs.map({ lhs + $0 })
     }
     static func + (lhs: Matrix<T>, rhs: T) -> Matrix<T> {
         return lhs.map({ $0 + rhs })
     }
+    static func + (lhs: T, rhs: Matrix<T>) -> Matrix<T> {
+        return rhs + lhs
+    }
 
     // MINUS
     static func - (lhs: Matrix<T>, rhs: Matrix<T>) -> Matrix<T> {
-        assert(lhs.shape == rhs.shape, "Shapes not valid")
+        assert(lhs.shape == rhs.shape, "Shapes invalid")
         return Matrix(shape: lhs.shape, flat: zip(lhs.flat, rhs.flat).map({ $0.0 - $0.1 }))
-    }
-    static func - (lhs: T, rhs: Matrix<T>) -> Matrix<T> {
-        return rhs.map({ lhs - $0 })
     }
     static func - (lhs: Matrix<T>, rhs: T) -> Matrix<T> {
         return lhs.map({ $0 - rhs })
+    }
+    static func - (lhs: T, rhs: Matrix<T>) -> Matrix<T> {
+        return rhs.map({ lhs - $0 })
     }
 }
 
 extension Matrix where T : Numeric {
     // TIMES
     static func * (lhs: Matrix<T>, rhs: Matrix<T>) -> Matrix<T> {
-        assert(lhs.shape == rhs.shape, "Shapes not valid")
+        assert(lhs.shape == rhs.shape, "Shapes invalid")
         return Matrix(shape: lhs.shape, flat: zip(lhs.flat, rhs.flat).map({ $0.0 * $0.1 }))
-    }
-    static func * (lhs: T, rhs: Matrix<T>) -> Matrix<T> {
-        return rhs.map({ lhs * $0 })
     }
     static func * (lhs: Matrix<T>, rhs: T) -> Matrix<T> {
         return lhs.map({ $0 * rhs })
+    }
+    static func * (lhs: T, rhs: Matrix<T>) -> Matrix<T> {
+        return rhs * lhs
     }
 }
 
 extension Matrix where T : FloatingPoint {
     // DIVIDE
     static func / (lhs: Matrix<T>, rhs: Matrix<T>) -> Matrix<T> {
-        assert(lhs.shape == rhs.shape, "Shapes not valid")
+        assert(lhs.shape == rhs.shape, "Shapes invalid")
         return Matrix(shape: lhs.shape, flat: zip(lhs.flat, rhs.flat).map({ $0.0 / $0.1 }))
     }
-
-    static func / (lhs: T, rhs: Matrix<T>) -> Matrix<T> {
-        return rhs.map({ lhs / $0 })
-    }
-
     static func / (lhs: Matrix<T>, rhs: T) -> Matrix<T> {
         return lhs.map({ $0 / rhs })
     }
-}
-
-// MARK: - Math functions
-// POWER FUNCTION
-func pow(_ x: Matrix<Double>, power: Double) -> Matrix<Double> {
-    return x.map({ pow($0, power) })
-}
-
-func sqrt(_ x: Matrix<Double>) -> Matrix<Double> {
-    return x.map({ sqrt($0) })
-}
-
-func exp(_ x: Matrix<Double>) -> Matrix<Double> {
-    return x.map({ exp($0) })
+    static func / (lhs: T, rhs: Matrix<T>) -> Matrix<T> {
+        return rhs.map({ lhs / $0 })
+    }
 }

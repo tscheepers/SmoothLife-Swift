@@ -105,7 +105,7 @@ class SmoothLife {
         let (height, width) = (Double(shape.height), Double(shape.width))
 
         let radii = sqrt(pow(colIncreasing - height/2, power: 2) + pow(rowIncreading - width/2, power: 2))
-        let logistic = 1 / (1 + exp(log2(min(height, width)) * (radii - radius)))
+        let logistic: Matrix<Double> = 1.0 / (1.0 + exp(log2(min(height, width)) * (radii - radius)))
 
         return logistic
             .roll(rows: shape.height/2)

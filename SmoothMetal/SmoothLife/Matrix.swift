@@ -35,7 +35,7 @@ struct Matrix<T> {
 
     /// Roll over the matrix on its rows [A, B, C] -> [C, A, B]
     func roll(rows: Int) -> Matrix {
-        return Matrix(shape: shape, flat: Array(self.flat.suffix(from: rows) + self.flat.prefix(rows)))
+        return Matrix(shape: shape, flat: Array(self.flat.suffix(from: rows * width) + self.flat.prefix(rows * width)))
     }
 
     /// Roll over the matrix on its columns [A, B, C] -> [C, A, B]
@@ -79,7 +79,7 @@ extension Matrix: CustomDebugStringConvertible {
 // MARK: - Complex
 extension Matrix where T == ComplexDouble {
     var real: Matrix<Double> {
-        return Matrix<Double>(shape: shape, flat: flat.map({ $0.real }))
+        return self.map({ $0.real })
     }
 
     func fft(_ direction: vDSP.FourierTransformDirection = .forward) -> Matrix<ComplexDouble> {
@@ -99,16 +99,16 @@ extension Matrix where T == ComplexDouble {
             fatalError("Could not initialize FFT Setup")
         }
 
-        switch direction {
-        case .forward:
-            vDSP_fft2d_zipD(fftSetup, &complexBuffer, 1, 0, log2Width, log2Height, FFTDirection(FFT_FORWARD))
-        case .inverse:
-            vDSP_fft2d_zipD(fftSetup, &complexBuffer, 1, 0, log2Width, log2Height, FFTDirection(FFT_INVERSE))
-        @unknown default:
-            fatalError("Unkown direction")
-        }
+        vDSP_fft2d_zipD(fftSetup, &complexBuffer, 1, 0, log2Width, log2Height, direction.fftDirection)
 
-        let flat = zip(reals, imags).map({ ComplexDouble($0.0, $0.1) })
+        let flat = zip(reals, imags).map({ (real, imag) -> ComplexDouble in
+            switch (direction) {
+            case .inverse:
+                return ComplexDouble(real / Double(n), imag / Double(n))
+            default:
+                return ComplexDouble(real, imag)
+            }
+       })
 
         defer {
             imags.deallocate()
@@ -144,6 +144,27 @@ extension Matrix where T == Double {
 
     var complex: Matrix<ComplexDouble> {
         return self.map({ ComplexDouble($0, 0.0) })
+    }
+
+    func hardStep(_ boundary: Double = 0.5) -> Matrix<Double> {
+        return self.map { (value) -> Double in
+            if value > boundary {
+                return 1.0
+            } else {
+                return 0.0
+            }
+        }
+    }
+
+    func clamp(_ between: (Double, Double) = (0.0, 1.0)) -> Matrix<Double> {
+        return self.map { (value) -> Double in
+            if value < between.0 {
+                return between.0
+            } else if value > between.1 {
+                return between.1
+            }
+            return value
+        }
     }
 }
 
@@ -216,10 +237,10 @@ extension Matrix where T : AdditiveArithmetic {
         return Matrix(shape: lhs.shape, flat: zip(lhs.flat, rhs.flat).map({ $0.0 + $0.1 }))
     }
     static func + (lhs: T, rhs: Matrix<T>) -> Matrix<T> {
-        return Matrix(shape: rhs.shape, flat: rhs.flat.map({ lhs + $0 }))
+        return rhs.map({ lhs + $0 })
     }
     static func + (lhs: Matrix<T>, rhs: T) -> Matrix<T> {
-        return Matrix(shape: lhs.shape, flat: lhs.flat.map({ $0 + rhs }))
+        return lhs.map({ $0 + rhs })
     }
 
     // MINUS
@@ -228,10 +249,10 @@ extension Matrix where T : AdditiveArithmetic {
         return Matrix(shape: lhs.shape, flat: zip(lhs.flat, rhs.flat).map({ $0.0 - $0.1 }))
     }
     static func - (lhs: T, rhs: Matrix<T>) -> Matrix<T> {
-        return Matrix(shape: rhs.shape, flat: rhs.flat.map({ lhs - $0 }))
+        return rhs.map({ lhs - $0 })
     }
     static func - (lhs: Matrix<T>, rhs: T) -> Matrix<T> {
-        return Matrix(shape: lhs.shape, flat: lhs.flat.map({ $0 - rhs }))
+        return lhs.map({ $0 - rhs })
     }
 }
 
@@ -242,10 +263,10 @@ extension Matrix where T : Numeric {
         return Matrix(shape: lhs.shape, flat: zip(lhs.flat, rhs.flat).map({ $0.0 * $0.1 }))
     }
     static func * (lhs: T, rhs: Matrix<T>) -> Matrix<T> {
-        return Matrix(shape: rhs.shape, flat: rhs.flat.map({ lhs * $0 }))
+        return rhs.map({ lhs * $0 })
     }
     static func * (lhs: Matrix<T>, rhs: T) -> Matrix<T> {
-        return Matrix(shape: lhs.shape, flat: lhs.flat.map({ $0 * rhs }))
+        return lhs.map({ $0 * rhs })
     }
 }
 
@@ -257,24 +278,24 @@ extension Matrix where T : FloatingPoint {
     }
 
     static func / (lhs: T, rhs: Matrix<T>) -> Matrix<T> {
-        return Matrix(shape: rhs.shape, flat: rhs.flat.map({ lhs / $0 }))
+        return rhs.map({ lhs / $0 })
     }
 
     static func / (lhs: Matrix<T>, rhs: T) -> Matrix<T> {
-        return Matrix(shape: lhs.shape, flat: lhs.flat.map({ $0 / rhs }))
+        return lhs.map({ $0 / rhs })
     }
 }
 
 // MARK: - Math functions
 // POWER FUNCTION
 func pow(_ x: Matrix<Double>, power: Double) -> Matrix<Double> {
-    return Matrix(shape: x.shape, flat: x.flat.map({ pow($0, power) }))
+    return x.map({ pow($0, power) })
 }
 
 func sqrt(_ x: Matrix<Double>) -> Matrix<Double> {
-    return Matrix(shape: x.shape, flat: x.flat.map({ sqrt($0) }))
+    return x.map({ sqrt($0) })
 }
 
 func exp(_ x: Matrix<Double>) -> Matrix<Double> {
-    return Matrix(shape: x.shape, flat: x.flat.map({ exp($0) }))
+    return x.map({ exp($0) })
 }

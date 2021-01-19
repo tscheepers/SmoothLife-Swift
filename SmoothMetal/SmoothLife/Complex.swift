@@ -53,7 +53,7 @@ struct ComplexDouble : CustomDebugStringConvertible, Numeric {
     }
 
     static func * (lhs: Self, rhs: Self) -> Self {
-        return ComplexDouble(lhs.real * rhs.real - lhs.imaginary * rhs.imaginary, lhs.real * rhs.imaginary - lhs.imaginary * rhs.real)
+        return ComplexDouble(lhs.real * rhs.real - lhs.imaginary * rhs.imaginary, lhs.real * rhs.imaginary + lhs.imaginary * rhs.real)
     }
 
     static func * (lhs: Self, rhs: Double) -> Self {
@@ -61,9 +61,7 @@ struct ComplexDouble : CustomDebugStringConvertible, Numeric {
     }
 
     static func *= (lhs: inout ComplexDouble, rhs: ComplexDouble) {
-        let realTmp = lhs.real
-        lhs.real = lhs.real * rhs.real - lhs.imaginary * rhs.imaginary
-        lhs.imaginary = realTmp * rhs.imaginary - lhs.imaginary * rhs.real
+        lhs = lhs * rhs
     }
 
     static public func / (lhs: Self, rhs: Self) -> Self {

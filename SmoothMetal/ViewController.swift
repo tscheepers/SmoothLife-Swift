@@ -3,7 +3,7 @@ import Metal
 
 class ViewController: UIViewController {
 
-    var life: SmoothLife!
+    var renderer: SmoothLifeRenderer!
 
     var metalLayer: CAMetalLayer!
 
@@ -12,14 +12,10 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let factory = SmoothLifeFactory()
-
-        life = factory.create(
-            cellsWide: 64,
-            cellsHigh: 64
+        let factory = SmoothLifeRendererFactory()
+        renderer = factory.createRenderer(
+            forSmoothLife: SmoothLife(shape: (height: 512, width: 512))
         )
-        life.restart()
-
         metalLayer = factory.createMetalLayer(frame: view.layer.frame)
         view.layer.addSublayer(metalLayer)
 
@@ -30,7 +26,7 @@ class ViewController: UIViewController {
     @objc func gameloop() {
       autoreleasepool {
         guard let drawable = metalLayer?.nextDrawable() else { return }
-        life.render(drawable: drawable)
+        renderer.render(drawable: drawable)
       }
     }
 

@@ -27,7 +27,7 @@ fragment float4 gol_fragment_shader(Vertex vtx [[stage_in]],
 
 kernel void gol_compute_shader(texture2d<uint, access::read> current [[texture(0)]],
                            texture2d<uint, access::write> next [[texture(1)]],
-                           uint2 index [[thread_position_in_grid]])
+                           uint2 index [[ thread_position_in_grid ]])
 {
     short neighbours = 0;
 

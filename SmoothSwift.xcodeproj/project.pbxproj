@@ -12,6 +12,8 @@
 		762FE36F25B7883A004C6E43 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 762FE36E25B7883A004C6E43 /* README.md */; };
 		763C928F25ADB4F700E78004 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 763C928E25ADB4F700E78004 /* Shaders.metal */; };
 		763C929325ADB50300E78004 /* SmoothLifeRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 763C929225ADB50300E78004 /* SmoothLifeRenderer.swift */; };
+		763EC6F825B8855700ABCDE7 /* Shaders1.metal in Sources */ = {isa = PBXBuildFile; fileRef = 763EC6F725B8855700ABCDE7 /* Shaders1.metal */; };
+		763EC70025B88C8400ABCDE7 /* Shaders2.metal in Sources */ = {isa = PBXBuildFile; fileRef = 763EC6FF25B88C8400ABCDE7 /* Shaders2.metal */; };
 		7680787D25B5976500C8FD26 /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7680787C25B5976500C8FD26 /* Matrix.swift */; };
 		7680789325B5FE2A00C8FD26 /* Complex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7680789225B5FE2A00C8FD26 /* Complex.swift */; };
 		76884C0525B7062E0088D5F1 /* SmoothLifeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76884C0425B7062E0088D5F1 /* SmoothLifeTests.swift */; };
@@ -44,6 +46,8 @@
 		762FE36E25B7883A004C6E43 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		763C928E25ADB4F700E78004 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		763C929225ADB50300E78004 /* SmoothLifeRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmoothLifeRenderer.swift; sourceTree = "<group>"; };
+		763EC6F725B8855700ABCDE7 /* Shaders1.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders1.metal; sourceTree = "<group>"; };
+		763EC6FF25B88C8400ABCDE7 /* Shaders2.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders2.metal; sourceTree = "<group>"; };
 		7680787C25B5976500C8FD26 /* Matrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
 		7680789225B5FE2A00C8FD26 /* Complex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Complex.swift; sourceTree = "<group>"; };
 		76884BF725B706140088D5F1 /* SmoothSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmoothSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -101,6 +105,15 @@
 			path = SmoothLife;
 			sourceTree = "<group>";
 		};
+		763EC6F625B8854700ABCDE7 /* SmoothLifeMetal */ = {
+			isa = PBXGroup;
+			children = (
+				763EC6F725B8855700ABCDE7 /* Shaders1.metal */,
+				763EC6FF25B88C8400ABCDE7 /* Shaders2.metal */,
+			);
+			path = SmoothLifeMetal;
+			sourceTree = "<group>";
+		};
 		76884BF825B706140088D5F1 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -151,6 +164,7 @@
 		76F9B5C22590CC4D000D403C /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				763EC6F625B8854700ABCDE7 /* SmoothLifeMetal */,
 				763C928D25ADB4E400E78004 /* SmoothLife */,
 				760F67D225ACAC33006DE2B7 /* GameOfLife */,
 				76F9B5C32590CC4D000D403C /* AppDelegate.swift */,
@@ -283,8 +297,10 @@
 				7680789325B5FE2A00C8FD26 /* Complex.swift in Sources */,
 				7680787D25B5976500C8FD26 /* Matrix.swift in Sources */,
 				760F67D025AC902E006DE2B7 /* GameOfLife.swift in Sources */,
+				763EC6F825B8855700ABCDE7 /* Shaders1.metal in Sources */,
 				76B91E892590FE0400AC8893 /* Shaders.metal in Sources */,
 				76F9B5C82590CC4D000D403C /* ViewController.swift in Sources */,
+				763EC70025B88C8400ABCDE7 /* Shaders2.metal in Sources */,
 				763C929325ADB50300E78004 /* SmoothLifeRenderer.swift in Sources */,
 				76F9B5C42590CC4D000D403C /* AppDelegate.swift in Sources */,
 				763C928F25ADB4F700E78004 /* Shaders.metal in Sources */,

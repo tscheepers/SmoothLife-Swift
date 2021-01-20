@@ -3,8 +3,6 @@ import Foundation
 import UIKit
 import Accelerate
 
-// Use: https://developer.apple.com/documentation/accelerate/fast_fourier_transforms
-
 
 class SmoothLifeRenderer {
 

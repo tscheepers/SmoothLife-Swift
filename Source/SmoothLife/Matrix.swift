@@ -84,10 +84,6 @@ extension Matrix where T == Double {
         return flat.reduce(0.0, { $0 + $1 })
     }
 
-    func fft(_ direction: vDSP.FourierTransformDirection = .forward) -> Matrix<ComplexDouble> {
-        return self.complex.fft(direction)
-    }
-
     var complex: Matrix<ComplexDouble> {
         return self.map({ ComplexDouble($0, 0.0) })
     }
@@ -146,6 +142,11 @@ extension Matrix where T == Double {
     }
 
     // MARK: Fast vDSP methods specific to Double
+
+    func fft(_ direction: vDSP.FourierTransformDirection = .forward, reuseSetup setup: FFTSetupD? = nil) -> Matrix<ComplexDouble> {
+        return self.complex.fft(direction, reuseSetup: setup)
+    }
+
     // PLUS
     static func + (lhs: Matrix<T>, rhs: Matrix<T>) -> Matrix<T> {
         assert(lhs.shape == rhs.shape, "Shapes invalid")
@@ -311,7 +312,7 @@ extension Matrix where T == ComplexDouble {
 
     // MARK: Fast vDSP methods specific to ComplexDouble
 
-    func fft(_ direction: vDSP.FourierTransformDirection = .forward) -> Matrix<ComplexDouble> {
+    func fft(_ direction: vDSP.FourierTransformDirection = .forward, reuseSetup setup: FFTSetupD? = nil) -> Matrix<ComplexDouble> {
 
         let reals = UnsafeMutableBufferPointer<Double>.allocate(capacity: n)
         let imags =  UnsafeMutableBufferPointer<Double>.allocate(capacity: n)
@@ -320,13 +321,11 @@ extension Matrix where T == ComplexDouble {
         _ = imags.initialize(from: flat.map({ $0.imaginary }))
 
         var complexBuffer = DSPDoubleSplitComplex(realp: reals.baseAddress!, imagp: imags.baseAddress!)
-        let log2Size = UInt(log2(Double(n)))
+
+        // If no reusable fft setup is specified we'll create a one-off
+        let fftSetup = setup ?? self.createFftSetup()
         let log2Width = UInt(log2(Double(width)))
         let log2Height = UInt(log2(Double(height)))
-
-        guard let fftSetup = vDSP_create_fftsetupD(log2Size, FFTRadix(kFFTRadix2)) else {
-            fatalError("Could not initialize FFT Setup")
-        }
 
         vDSP_fft2d_zipD(fftSetup, &complexBuffer, 1, 0, log2Width, log2Height, direction.fftDirection)
 
@@ -342,7 +341,10 @@ extension Matrix where T == ComplexDouble {
         defer {
             imags.deallocate()
             reals.deallocate()
-            vDSP_destroy_fftsetupD(fftSetup)
+            
+            if setup == nil {
+                vDSP_destroy_fftsetupD(fftSetup)
+            }
         }
 
         return Matrix<ComplexDouble>(shape: shape, flat: flat)
@@ -352,6 +354,20 @@ extension Matrix where T == ComplexDouble {
     static func * (lhs: Matrix<T>, rhs: Matrix<T>) -> Matrix<T> {
         assert(lhs.shape == rhs.shape, "Shapes invalid")
         return Matrix(shape: lhs.shape, flat: zip(lhs.flat, rhs.flat).map({ $0.0 * $0.1 }))
+    }
+}
+
+extension Matrix {
+    /// Create a reference to an fftSetup object
+    /// You are resonsible for calling `vDSP_destroy_fftsetupD()` when it is no longer required
+    func createFftSetup() -> FFTSetupD {
+        let log2Size = UInt(log2(Double(n)))
+
+        guard let fftSetup = vDSP_create_fftsetupD(log2Size, FFTRadix(kFFTRadix2)) else {
+            fatalError("Could not initialize FFT Setup")
+        }
+
+        return fftSetup
     }
 }
 

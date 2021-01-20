@@ -1,4 +1,5 @@
 import Foundation
+import Accelerate
 
 class SmoothLife {
 
@@ -23,16 +24,19 @@ class SmoothLife {
 
     /// Also called `N`
     /// The neightborhood kernel expressed in the frequency domain
-    private let neightborhoodKernel: Matrix<ComplexDouble>
+    let neightborhoodKernel: Matrix<ComplexDouble>
 
     /// Also called `M`
     /// The effectiveCell kernel expressed in the frequency domain
-    private let effectiveCellKernel: Matrix<ComplexDouble>
+    let effectiveCellKernel: Matrix<ComplexDouble>
 
     /// Easy accessor for the field's shape
     var shape: (height: Int, width: Int) {
         return field.shape
     }
+
+    /// If you reuse a single FFTSetupD object for multiple transforms the code will be more performant
+    let fftSetup: FFTSetupD
 
     init(
         shape: (height: Int, width: Int) = (64, 64),
@@ -44,6 +48,7 @@ class SmoothLife {
         field: Matrix<Double>? = nil
     ) {
         self.field = field ?? Self.randomField(radius: Int(outerRadius), shape: shape)
+        self.fftSetup = self.field.createFftSetup()
 
         self.birthInterval = birthInterval
         self.deathInterval = deathInterval
@@ -75,10 +80,10 @@ class SmoothLife {
     /// Apply convolution by multiplying in the frequency domain
     func applyKernels() -> (M: Matrix<Double>, N: Matrix<Double>)
     {
-        let fieldInFd = field.fft()
+        let fieldInFd = field.fft(reuseSetup: fftSetup)
 
-        let effectiveCellKernelApplied = (fieldInFd * effectiveCellKernel).fft(.inverse).real
-        let neightborhoodKernelApplied = (fieldInFd * neightborhoodKernel).fft(.inverse).real
+        let effectiveCellKernelApplied = (fieldInFd * effectiveCellKernel).fft(.inverse, reuseSetup: fftSetup).real
+        let neightborhoodKernelApplied = (fieldInFd * neightborhoodKernel).fft(.inverse, reuseSetup: fftSetup).real
 
         return (M: effectiveCellKernelApplied, N: neightborhoodKernelApplied)
     }
@@ -149,5 +154,9 @@ class SmoothLife {
 
         // We transform the kernels to the frequency domain
         return (effectiveCellKernel.fft(), neightborhoodKernel.fft())
+    }
+
+    deinit {
+        vDSP_destroy_fftsetupD(self.fftSetup)
     }
 }

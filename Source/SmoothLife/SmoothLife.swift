@@ -24,11 +24,11 @@ class SmoothLife {
 
     /// Also called `N`
     /// The neightborhood kernel expressed in the frequency domain
-    let neightborhoodKernel: Matrix<ComplexDouble>
+    let neightborhoodKernel: Matrix<Complex<Double>>
 
     /// Also called `M`
     /// The effectiveCell kernel expressed in the frequency domain
-    let effectiveCellKernel: Matrix<ComplexDouble>
+    let effectiveCellKernel: Matrix<Complex<Double>>
 
     /// Easy accessor for the field's shape
     var shape: (height: Int, width: Int) {
@@ -145,7 +145,7 @@ class SmoothLife {
     }
 
     /// Provides the required kernels in the frequency domain
-    static func kernels(shape: (height: Int, width: Int), innerRadius: Double, outerRadius: Double) -> (Matrix<ComplexDouble>, Matrix<ComplexDouble>) {
+    static func kernels(shape: (height: Int, width: Int), innerRadius: Double, outerRadius: Double) -> (Matrix<Complex<Double>>, Matrix<Complex<Double>>) {
         var effectiveCellKernel = self.shiftedSmoothCircle(shape: shape, radius: innerRadius)
         var neightborhoodKernel = self.shiftedSmoothCircle(shape: shape, radius: outerRadius) - effectiveCellKernel
 

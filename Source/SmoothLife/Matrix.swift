@@ -84,8 +84,8 @@ extension Matrix where T == Double {
         return flat.reduce(0.0, { $0 + $1 })
     }
 
-    var complex: Matrix<ComplexDouble> {
-        return self.map({ ComplexDouble($0, 0.0) })
+    var complex: Matrix<Complex<T>> {
+        return self.map({ Complex<T>($0, 0.0) })
     }
 
     func hardStep(_ boundary: T = 0.5) -> Matrix<T> {
@@ -143,7 +143,7 @@ extension Matrix where T == Double {
 
     // MARK: Fast vDSP methods specific to Double
 
-    func fft(_ direction: vDSP.FourierTransformDirection = .forward, reuseSetup setup: FFTSetupD? = nil) -> Matrix<ComplexDouble> {
+    func fft(_ direction: vDSP.FourierTransformDirection = .forward, reuseSetup setup: FFTSetupD? = nil) -> Matrix<Complex<Double>> {
         return self.complex.fft(direction, reuseSetup: setup)
     }
 
@@ -305,14 +305,14 @@ func exp(_ x: Matrix<Double>) -> Matrix<Double> {
 }
 
 // MARK: - Complex
-extension Matrix where T == ComplexDouble {
+extension Matrix where T == Complex<Double> {
     var real: Matrix<Double> {
         return self.map({ $0.real })
     }
 
-    // MARK: Fast vDSP methods specific to ComplexDouble
+    // MARK: Fast vDSP methods specific to Complex<Double>
 
-    func fft(_ direction: vDSP.FourierTransformDirection = .forward, reuseSetup setup: FFTSetupD? = nil) -> Matrix<ComplexDouble> {
+    func fft(_ direction: vDSP.FourierTransformDirection = .forward, reuseSetup setup: FFTSetupD? = nil) -> Matrix<Complex<Double>> {
 
         let reals = UnsafeMutableBufferPointer<Double>.allocate(capacity: n)
         let imags =  UnsafeMutableBufferPointer<Double>.allocate(capacity: n)
@@ -329,12 +329,12 @@ extension Matrix where T == ComplexDouble {
 
         vDSP_fft2d_zipD(fftSetup, &complexBuffer, 1, 0, log2Width, log2Height, direction.fftDirection)
 
-        let flat = zip(reals, imags).map({ (real, imag) -> ComplexDouble in
+        let flat = zip(reals, imags).map({ (real, imag) -> Complex<Double> in
             switch (direction) {
             case .inverse:
-                return ComplexDouble(real / Double(n), imag / Double(n))
+                return Complex<Double>(real / Double(n), imag / Double(n))
             default:
-                return ComplexDouble(real, imag)
+                return Complex<Double>(real, imag)
             }
        })
 
@@ -347,7 +347,7 @@ extension Matrix where T == ComplexDouble {
             }
         }
 
-        return Matrix<ComplexDouble>(shape: shape, flat: flat)
+        return Self(shape: shape, flat: flat)
     }
 
     // TIMES
@@ -374,6 +374,7 @@ extension Matrix {
 // MARK: - Float
 extension Matrix where T == Float {
 
+    /// Create a matrix from a texture (float2)
     static func copy(fromTexture texture: MTLTexture) -> Matrix<T> {
 
         let n =  texture.height * texture.width
@@ -399,6 +400,38 @@ extension Matrix where T == Float {
             mipmapLevel: 0,
             withBytes: flat,
             bytesPerRow: width * MemoryLayout<T>.stride
+        )
+    }
+}
+
+extension Matrix where T == Complex<Float> {
+
+    /// Create a matrix from a texture (float2)
+    static func copy(fromTexture texture: MTLTexture) -> Matrix<T> {
+
+        let n = texture.height * texture.width
+        let pointer = UnsafeMutableRawPointer.allocate(byteCount: n * MemoryLayout<Complex<Float>>.stride, alignment: MemoryLayout<T>.alignment)
+        texture.getBytes(
+            pointer,
+            bytesPerRow: texture.width * MemoryLayout<Complex<Float>>.stride,
+            from: MTLRegionMake2D(0, 0, texture.width, texture.height),
+            mipmapLevel: 0
+        )
+
+        let typedPointer = pointer.bindMemory(to: Complex<Float>.self, capacity: n)
+
+        let flat = Array(UnsafeBufferPointer(start: typedPointer, count: n))
+
+        return Matrix<T>(shape: (height: texture.height, width: texture.width), flat: flat)
+    }
+
+    /// Fill a metal texture with the matrix
+    func fill(texture: MTLTexture) {
+        texture.replace(
+            region: MTLRegionMake2D(0, 0, width, height),
+            mipmapLevel: 0,
+            withBytes: flat,
+            bytesPerRow: width * MemoryLayout<Complex<Float>>.stride
         )
     }
 }

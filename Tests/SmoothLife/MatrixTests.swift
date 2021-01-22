@@ -18,17 +18,11 @@ class MatrixTests: XCTestCase {
     }
 
     func testvDSPFFT() throws {
-        let width = 4
-        let height = 2
 
-        let matrix = Matrix<Double>(shape: (height, width), flat: [
+        let matrix = Matrix<Double>(shape: (2, 4), flat: [
             1, -2,   3,   4,
             3,  4.5, 5,   6
         ])
-
-        // Numpy result:
-        // [[ 24.5+0.j   -4. +7.5j  -0.5+0.j   -4. -7.5j]
-        //  [-12.5+0.j    0. +4.5j   4.5+0.j    0. -4.5j]]
 
         let expectedResult = [
             [(24.5, 0.0), (-4.0, 7.5),  (-0.5, 0.0), (-4.0, -7.5)],
@@ -36,13 +30,50 @@ class MatrixTests: XCTestCase {
         ]
 
         let vdspFftResult = matrix.fft()
-        for i in 0..<height {
-            for j in 0..<width {
-                XCTAssertEqual(vdspFftResult[i, j].real, expectedResult[i][j].0, accuracy: 0.001, "(\(i),\(j)) not equal")
-                XCTAssertEqual(vdspFftResult[i, j].imaginary, expectedResult[i][j].1, accuracy: 0.001, "(\(i),\(j)) not equal")
-            }
+
+        SLSAssertEqual(vdspFftResult, expectedResult, accuracy: 0.001)
+    }
+}
+
+func SLSAssertEqual<T>(_ matrix: Matrix<T>, _ list: [[T]]) where T : FloatingPoint {
+    for i in 0..<matrix.height {
+        for j in 0..<matrix.width {
+            XCTAssertEqual(matrix[i, j], list[i][j], "(\(i),\(j)) not equal")
         }
     }
 }
 
 
+func SLSAssertEqual<T>(_ matrix: Matrix<T>, _ list: [[T]], accuracy: T) where T : FloatingPoint {
+    for i in 0..<matrix.height {
+        for j in 0..<matrix.width {
+            XCTAssertEqual(matrix[i, j], list[i][j], accuracy: accuracy, "(\(i),\(j)) not equal")
+        }
+    }
+}
+
+func SLSAssertEqual<T>(_ matrixA: Matrix<T>, _ matrixB: Matrix<T>, accuracy: T) where T : FloatingPoint {
+    for i in 0..<matrixA.height {
+        for j in 0..<matrixA.width {
+            XCTAssertEqual(matrixA[i, j], matrixB[i, j], accuracy: accuracy, "(\(i),\(j)) not equal")
+        }
+    }
+}
+
+func SLSAssertEqual<T>(_ matrix: Matrix<Complex<T>>, _ list: [[(T, T)]], accuracy: T) where T : FloatingPoint {
+    for i in 0..<matrix.height {
+        for j in 0..<matrix.width {
+            XCTAssertEqual(matrix[i, j].real, list[i][j].0, accuracy: accuracy, "(\(i),\(j)) real not equal")
+            XCTAssertEqual(matrix[i, j].imaginary, list[i][j].1, accuracy: accuracy, "(\(i),\(j)) imaginary not equal")
+        }
+    }
+}
+
+func SLSAssertEqual<T>(_ matrix: Matrix<Complex<T>>, _ list: [[Complex<T>]], accuracy: T) where T : FloatingPoint {
+    for i in 0..<matrix.height {
+        for j in 0..<matrix.width {
+            XCTAssertEqual(matrix[i, j].real, list[i][j].real, accuracy: accuracy, "(\(i),\(j)) real not equal")
+            XCTAssertEqual(matrix[i, j].imaginary, list[i][j].imaginary, accuracy: accuracy, "(\(i),\(j)) imaginary not equal")
+        }
+    }
+}

@@ -11,8 +11,10 @@ The codebase also includes [a simple implementation](Source/GameOfLife) of the o
 
 Written in Swift 5.3.2 using Xcode 12.3 for iOS 14.3.
 
-Fourier transform
+Fast Fourier transform
 --------------------
 
-An important part of the implementation is the quick application of convolutions by multiplying in the frequency domain. This requires to transform a representation to the frequency domain and back again using the [fast Fourier transform](https://en.wikipedia.org/wiki/Fast_Fourier_transform). A great video explaining the idea and use cases can be found [here](https://www.youtube.com/watch?v=g8RkArhtCc4), and another video explaining the algorithm can be found [here](https://www.youtube.com/watch?v=h7apO7q16V0). An important aspect of the fast Fourier transform is that it can apply the convolution in `O(n log(n))` if and only if `n` is a power of 2, e.g. `2^8 = 256`.
+An important part of the implementation is the quick application of convolutions by multiplying in the frequency domain. This requires to transform a representation to the frequency domain and back again using the [fast Fourier transform](https://en.wikipedia.org/wiki/Fast_Fourier_transform). A great video explaining the idea and use cases can be found [here](https://www.youtube.com/watch?v=g8RkArhtCc4), and another video explaining the algorithm can be found [here](https://www.youtube.com/watch?v=h7apO7q16V0). An important aspect of the fast Fourier transform is that it can apply the convolution in `O(n log(n))` if and only if `n` is a power of 2, e.g. `2^8 = 256`. This is why our field's dimenstions are a power of two.
+
+In anticipation of a full implementation in Metal, I needed to write a [FFT in Metal shading language](Source/MetalFFT). This will allow running the full SmoothLife algorithm on the GPU without going back for the CPU to call vDSP. My hope is this increases performance. You can find the [Metal FFT implementation here](Source/MetalFFT).
 

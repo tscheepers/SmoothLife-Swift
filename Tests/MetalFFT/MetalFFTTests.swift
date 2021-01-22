@@ -19,6 +19,10 @@ class MetalFFTTests: XCTestCase {
         let metalFftResult = metalFftComputer.execute(input: matrix)
 
         SLSAssertEqual(metalFftResult, expectedResult, accuracy: 0.001)
+
+        let metalFftInverseResult = metalFftComputer.execute(input: metalFftResult, direction: .inverse)
+
+        SLSAssertEqual(metalFftInverseResult, matrix, accuracy: 0.001)
     }
 
     func testFFTSimple2() throws {
@@ -37,6 +41,10 @@ class MetalFFTTests: XCTestCase {
         let metalFftResult = metalFftComputer.execute(input: matrix)
 
         SLSAssertEqual(metalFftResult, expectedResult, accuracy: 0.001)
+
+        let metalFftInverseResult = metalFftComputer.execute(input: metalFftResult, direction: .inverse)
+
+        SLSAssertEqual(metalFftInverseResult, matrix, accuracy: 0.001)
     }
 
 
@@ -56,6 +64,10 @@ class MetalFFTTests: XCTestCase {
         let metalFftResult = metalFftComputer.execute(input: matrix)
 
         SLSAssertEqual(metalFftResult, expectedResult, accuracy: 0.001)
+
+        let metalFftInverseResult = metalFftComputer.execute(input: metalFftResult, direction: .inverse)
+
+        SLSAssertEqual(metalFftInverseResult, matrix, accuracy: 0.001)
     }
 
     func testFFT() throws {
@@ -69,5 +81,15 @@ class MetalFFTTests: XCTestCase {
         SLSAssertEqual(doubleResult, Fixtures.fftTestOutput, accuracy: 0.001)
     }
 
-    
+    func testFFTInverse() throws {
+
+        let matrix = Matrix<Complex<Float>>(shape: (16, 16), flat: Fixtures.fftTestOutput.flatMap({ $0 })
+                                                .map({ Complex<Float>(Float($0.0), Float($0.1)) }) )
+
+        let metalFftComputer = FFT(size: matrix.shape)
+        let metalFffResult = metalFftComputer.execute(input: matrix, direction: .inverse).map { Double($0.real) }
+
+        SLSAssertEqual(metalFffResult, Fixtures.fftTestInput, accuracy: 0.001)
+    }
+
 }

@@ -67,6 +67,15 @@ func SLSAssertEqual<T>(_ matrixA: Matrix<T>, _ matrixB: Matrix<T>, accuracy: T) 
     }
 }
 
+func SLSAssertEqual<T>(_ matrixA: Matrix<Complex<T>>, _ matrixB: Matrix<Complex<T>>, accuracy: T) where T : FloatingPoint {
+    for i in 0..<matrixA.height {
+        for j in 0..<matrixA.width {
+            XCTAssertEqual(matrixA[i, j].real, matrixB[i, j].real, accuracy: accuracy, "(\(i),\(j)) real not equal")
+            XCTAssertEqual(matrixA[i, j].imaginary, matrixB[i, j].imaginary, accuracy: accuracy, "(\(i),\(j)) imaginary not equal")
+        }
+    }
+}
+
 func SLSAssertEqual<T>(_ matrix: Matrix<Complex<T>>, _ list: [[(T, T)]], accuracy: T) where T : FloatingPoint {
     for i in 0..<matrix.height {
         for j in 0..<matrix.width {

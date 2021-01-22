@@ -10,7 +10,6 @@
 		76024F6F25BACEDC00EA7472 /* SmoothLifeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76884C0425B7062E0088D5F1 /* SmoothLifeTests.swift */; };
 		760F67D025AC902E006DE2B7 /* GameOfLife.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760F67CF25AC902E006DE2B7 /* GameOfLife.swift */; };
 		762A485025B71CFD0084EBD4 /* MatrixTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762A484F25B71CFD0084EBD4 /* MatrixTests.swift */; };
-		762FE36F25B7883A004C6E43 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 762FE36E25B7883A004C6E43 /* README.md */; };
 		763C928F25ADB4F700E78004 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 763C928E25ADB4F700E78004 /* Shaders.metal */; };
 		763C929325ADB50300E78004 /* SmoothLifeRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 763C929225ADB50300E78004 /* SmoothLifeRenderer.swift */; };
 		763EC70025B88C8400ABCDE7 /* FFT.metal in Sources */ = {isa = PBXBuildFile; fileRef = 763EC6FF25B88C8400ABCDE7 /* FFT.metal */; };
@@ -57,6 +56,7 @@
 		763C928E25ADB4F700E78004 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		763C929225ADB50300E78004 /* SmoothLifeRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmoothLifeRenderer.swift; sourceTree = "<group>"; };
 		763EC6FF25B88C8400ABCDE7 /* FFT.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = FFT.metal; sourceTree = "<group>"; };
+		766CDE0325BB3E33001BC993 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		766D1D1E25B99170002E89E6 /* MetalFFT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalFFT.swift; sourceTree = "<group>"; };
 		766D1D2825B9BD69002E89E6 /* MetalFFTTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalFFTTests.swift; sourceTree = "<group>"; };
 		7680787C25B5976500C8FD26 /* Matrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
@@ -129,6 +129,7 @@
 			children = (
 				763EC6FF25B88C8400ABCDE7 /* FFT.metal */,
 				766D1D1E25B99170002E89E6 /* MetalFFT.swift */,
+				766CDE0325BB3E33001BC993 /* README.md */,
 			);
 			path = MetalFFT;
 			sourceTree = "<group>";
@@ -319,7 +320,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				762FE36F25B7883A004C6E43 /* README.md in Resources */,
 				76B91E8D259101D800AC8893 /* LaunchScreen.storyboard in Resources */,
 				76F9B5CD2590CC4E000D403C /* Assets.xcassets in Resources */,
 			);

@@ -1,14 +1,14 @@
 #include <metal_stdlib>
 using namespace metal;
 
-constant float TWOPI = 6.283185307179586;
+constant float TWO_PI = 6.283185307179586;
 
 struct Params {
-    float2 resolution;
-    float subtransformSize;
     float normalization;
     bool horizontal;
     bool forward;
+    uint dim;
+    uint power;
 };
 
 kernel void fft(constant Params& params [[buffer(0)]],
@@ -16,39 +16,40 @@ kernel void fft(constant Params& params [[buffer(0)]],
                 texture2d<float, access::write> next [[texture(1)]],
                 uint2 gid [[ thread_position_in_grid ]])
 {
-    float2 evenPos, oddPos, twiddle;
-    float index, evenIndex, twiddleArgument;
-    float4 even, odd, result;
-    float x = float(gid.x);
-    float y = float(gid.y);
+    uint index = (params.horizontal ? gid.x : gid.y);
+    uint indexOfWindow = (index / params.power) * (params.power / 2);
+    uint indexInWindow = index % (params.power / 2);
 
-    index = (params.horizontal ? x : y);
-    evenIndex = floor(index / params.subtransformSize) * (params.subtransformSize * 0.5) + fmod(index, params.subtransformSize * 0.5) + 0.5;
+    uint evenIndex = indexOfWindow + indexInWindow;
+    uint oddIndex = evenIndex + (params.dim / 2);
+
+    uint2 evenPos, oddPos;
 
     if (params.horizontal) {
-        evenPos = float2(evenIndex, y) * params.resolution;
-        oddPos = float2(evenIndex, y) * params.resolution;
-        oddPos.x += 0.5;
+        evenPos = uint2(evenIndex, gid.y);
+        oddPos = uint2(oddIndex, gid.y);
     } else {
-        evenPos = float2(x, evenIndex) * params.resolution;
-        oddPos = float2(x, evenIndex) * params.resolution;
-        oddPos.y += 0.5;
+        evenPos = uint2(gid.x, evenIndex);
+        oddPos = uint2(gid.x, oddIndex);
     }
 
-    constexpr sampler smplr(coord::normalized,
-                            address::repeat,
-                            filter::nearest);
+    float4 odd = current.read(oddPos);
 
-    even = current.sample(smplr, evenPos);
-    odd = current.sample(smplr, oddPos);
+    float twiddle = (params.forward ? -TWO_PI : TWO_PI) * (float(indexInWindow) / float(params.power));
+    float2 twiddleComplex = float2(cos(twiddle), sin(twiddle));
 
-    twiddleArgument = (params.forward ? -TWOPI : TWOPI) * (index / params.subtransformSize);
-    twiddle = float2(cos(twiddleArgument), sin(twiddleArgument));
+    float4 oddMultiplied = float4(twiddleComplex.x * odd.x - twiddleComplex.y * odd.y,
+                                  twiddleComplex.y * odd.x + twiddleComplex.x * odd.y,
+                                  0, 0);
 
-    result = (even.rgba + float4(
-        twiddle.x * odd.xz - twiddle.y * odd.yw,
-        twiddle.y * odd.xz + twiddle.x * odd.yw
-    ).xzyw);
+    float4 even = current.read(evenPos);
+
+    float4 result;
+    if (indexInWindow == (index % params.power)) {
+        result = (even + oddMultiplied) * params.normalization;
+    } else {
+        result = (even - oddMultiplied) * params.normalization;
+    }
 
     next.write(result, gid);
 }

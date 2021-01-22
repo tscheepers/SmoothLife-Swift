@@ -31,6 +31,12 @@ class Fixtures {
     /// The result of applying the transition function to M and N for the first iteration
     static let transitionResult : [[Double]] = Fixtures.loadCSV(named: "TransitionResult")
 
+    /// Randomly generated input to test FFT
+    static let fftTestInput : [[Double]] = Fixtures.loadCSV(named: "FftTestInput")
+
+    /// Randomly generated output to test FFT (generated with Numpy)
+    static let fftTestOutput : [[(Double, Double)]] = Fixtures.loadComplexCSV(named: "FftTestOutput")
+
     /// Method to load data from CSV
     static func loadCSV(named: String) -> [[Double]] {
 

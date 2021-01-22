@@ -17,7 +17,7 @@ class MatrixTests: XCTestCase {
         XCTAssertEqual(rolled.flat, [7.0, 8.0, 9.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
     }
 
-    func testvDSPFFT() throws {
+    func testvDSPFFTSimple() throws {
 
         let matrix = Matrix<Double>(shape: (2, 4), flat: [
             1, -2,   3,   4,
@@ -32,6 +32,13 @@ class MatrixTests: XCTestCase {
         let vdspFftResult = matrix.fft()
 
         SLSAssertEqual(vdspFftResult, expectedResult, accuracy: 0.001)
+    }
+
+    func testvDSPFFT() throws {
+        let matrix = Matrix<Double>(shape: (16, 16), flat: Fixtures.fftTestInput.flatMap({ $0 })).map({ Complex<Double>($0, 0.0) })
+        let vdspFftResult = matrix.fft()
+
+        SLSAssertEqual(vdspFftResult, Fixtures.fftTestOutput, accuracy: 0.001)
     }
 }
 

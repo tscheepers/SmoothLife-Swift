@@ -33,6 +33,8 @@
 		76F6FFEA25BAE1270073135F /* TransitionResult.csv in Resources */ = {isa = PBXBuildFile; fileRef = 76F6FFE325BAE0EC0073135F /* TransitionResult.csv */; };
 		76F6FFEB25BAE1270073135F /* StartState.csv in Resources */ = {isa = PBXBuildFile; fileRef = 76F6FFC325BADABA0073135F /* StartState.csv */; };
 		76F6FFEC25BAE1270073135F /* FftOnVirginField.csv in Resources */ = {isa = PBXBuildFile; fileRef = 76F6FFD925BADEC30073135F /* FftOnVirginField.csv */; };
+		76F6FFF825BAEC2A0073135F /* FftTestInput.csv in Resources */ = {isa = PBXBuildFile; fileRef = 76F6FFF425BAEB7F0073135F /* FftTestInput.csv */; };
+		76F6FFFE25BAECFF0073135F /* FftTestOutput.csv in Resources */ = {isa = PBXBuildFile; fileRef = 76F6FFFD25BAECFF0073135F /* FftTestOutput.csv */; };
 		76F9B5C42590CC4D000D403C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F9B5C32590CC4D000D403C /* AppDelegate.swift */; };
 		76F9B5C82590CC4D000D403C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F9B5C72590CC4D000D403C /* ViewController.swift */; };
 		76F9B5CD2590CC4E000D403C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 76F9B5CC2590CC4E000D403C /* Assets.xcassets */; };
@@ -73,6 +75,8 @@
 		76F6FFD925BADEC30073135F /* FftOnVirginField.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = FftOnVirginField.csv; sourceTree = "<group>"; };
 		76F6FFDF25BAE0A60073135F /* EffectiveCellKernelAppliedToField.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = EffectiveCellKernelAppliedToField.csv; sourceTree = "<group>"; };
 		76F6FFE325BAE0EC0073135F /* TransitionResult.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = TransitionResult.csv; sourceTree = "<group>"; };
+		76F6FFF425BAEB7F0073135F /* FftTestInput.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = FftTestInput.csv; sourceTree = "<group>"; };
+		76F6FFFD25BAECFF0073135F /* FftTestOutput.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = FftTestOutput.csv; sourceTree = "<group>"; };
 		76F9B5C02590CC4D000D403C /* SmoothSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmoothSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76F9B5C32590CC4D000D403C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		76F9B5C72590CC4D000D403C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -175,6 +179,8 @@
 				76F6FFD925BADEC30073135F /* FftOnVirginField.csv */,
 				76F6FFDF25BAE0A60073135F /* EffectiveCellKernelAppliedToField.csv */,
 				76F6FFE325BAE0EC0073135F /* TransitionResult.csv */,
+				76F6FFF425BAEB7F0073135F /* FftTestInput.csv */,
+				76F6FFFD25BAECFF0073135F /* FftTestOutput.csv */,
 			);
 			path = Fixtures;
 			sourceTree = "<group>";
@@ -299,8 +305,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				76F6FFEB25BAE1270073135F /* StartState.csv in Resources */,
+				76F6FFF825BAEC2A0073135F /* FftTestInput.csv in Resources */,
 				76F6FFEA25BAE1270073135F /* TransitionResult.csv in Resources */,
 				76F6FFE725BAE1270073135F /* EffectiveCellKernelInFd.csv in Resources */,
+				76F6FFFE25BAECFF0073135F /* FftTestOutput.csv in Resources */,
 				76F6FFE925BAE1270073135F /* EffectiveCellKernelAppliedToField.csv in Resources */,
 				76F6FFEC25BAE1270073135F /* FftOnVirginField.csv in Resources */,
 				76F6FFE825BAE1270073135F /* CircleInnerRadius.csv in Resources */,

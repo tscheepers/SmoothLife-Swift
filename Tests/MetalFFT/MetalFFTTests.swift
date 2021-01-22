@@ -1,7 +1,7 @@
 import XCTest
 
 
-class FFTTests: XCTestCase {
+class MetalFFTTests: XCTestCase {
 
     func testFFTSimple1() throws {
 
@@ -40,7 +40,7 @@ class FFTTests: XCTestCase {
     }
 
 
-    func testFFTComplex() throws {
+    func testFFTSimple3() throws {
 
         let matrix = Matrix<Float>(shape: (2, 4), flat: [
             1, -2,   3,   4,
@@ -56,6 +56,17 @@ class FFTTests: XCTestCase {
         let metalFftResult = metalFftComputer.execute(input: matrix)
 
         SLSAssertEqual(metalFftResult, expectedResult, accuracy: 0.001)
+    }
+
+    func testFFT() throws {
+
+        let matrix = Matrix<Double>(shape: (16, 16), flat: Fixtures.fftTestInput.flatMap({ $0 }))
+
+        let metalFftComputer = FFT(size: matrix.shape)
+        let metalFftResult = metalFftComputer.execute(input: matrix.map { Complex(Float($0),0) } )
+        let doubleResult = metalFftResult.map({ Complex<Double>(Double($0.real), Double($0.imaginary)) })
+
+        SLSAssertEqual(doubleResult, Fixtures.fftTestOutput, accuracy: 0.001)
     }
 
     

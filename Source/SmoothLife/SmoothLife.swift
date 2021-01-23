@@ -48,7 +48,7 @@ class SmoothLife {
         field: Matrix<Double>? = nil
     ) {
         self.field = field ?? Self.randomField(radius: Int(outerRadius), shape: shape)
-        self.fftSetup = self.field.createFftSetup()
+        self.fftSetup = self.field.createVdspFftSetup()
 
         self.birthInterval = birthInterval
         self.deathInterval = deathInterval
@@ -80,10 +80,10 @@ class SmoothLife {
     /// Apply convolution by multiplying in the frequency domain
     func applyKernels() -> (M: Matrix<Double>, N: Matrix<Double>)
     {
-        let fieldInFd = field.fft(reuseSetup: fftSetup)
+        let fieldInFd = field.vdspFft(reuseSetup: fftSetup)
 
-        let effectiveCellKernelApplied = (fieldInFd * effectiveCellKernel).fft(.inverse, reuseSetup: fftSetup).real
-        let neightborhoodKernelApplied = (fieldInFd * neightborhoodKernel).fft(.inverse, reuseSetup: fftSetup).real
+        let effectiveCellKernelApplied = (fieldInFd * effectiveCellKernel).vdspFft(.inverse, reuseSetup: fftSetup).real
+        let neightborhoodKernelApplied = (fieldInFd * neightborhoodKernel).vdspFft(.inverse, reuseSetup: fftSetup).real
 
         return (M: effectiveCellKernelApplied, N: neightborhoodKernelApplied)
     }
@@ -153,7 +153,7 @@ class SmoothLife {
         neightborhoodKernel = neightborhoodKernel / neightborhoodKernel.sum
 
         // We transform the kernels to the frequency domain
-        return (effectiveCellKernel.fft(), neightborhoodKernel.fft())
+        return (effectiveCellKernel.vdspFft(), neightborhoodKernel.vdspFft())
     }
 
     deinit {

@@ -3,17 +3,27 @@ import Foundation
 import UIKit
 import simd
 
+enum FFTDirection {
+    case forward
+    case inverse
+}
 
-class FFT {
-
-    private let commandQueue: MTLCommandQueue
+class MetalFFT {
 
     private let computePipelineState: MTLComputePipelineState
-
     private let pingTexture: MTLTexture
     private let pongTexture: MTLTexture
-
     private let parameterBuffer: MTLBuffer
+
+    /// Device used by the FFT
+    var device : MTLDevice {
+        return computePipelineState.device
+    }
+
+    /// This texture will be the input texture when no texture is provided when calling `queueCommands(on:)`
+    var fallbackInputTexture: MTLTexture {
+        return pingTexture
+    }
 
     init(size: (height: Int, width: Int)) {
         let device = MTLCreateSystemDefaultDevice()!
@@ -22,14 +32,14 @@ class FFT {
         let shader = defaultLibrary.makeFunction(name: "fft")!
 
         self.parameterBuffer = device.makeBuffer(length: MemoryLayout<FFTParameters>.stride, options: [])!
-        self.commandQueue = device.makeCommandQueue()!
         self.computePipelineState = try! device.makeComputePipelineState(function: shader)
         self.pingTexture = device.makeTexture(descriptor: Self.textureDescriptor(size: size))!
         self.pongTexture = device.makeTexture(descriptor: Self.textureDescriptor(size: size))!
 
     }
 
-    static func textureDescriptor(size: (height: Int, width: Int)) -> MTLTextureDescriptor {
+    /// Describes a valid texture that can be used with this algorithm
+    private static func textureDescriptor(size: (height: Int, width: Int)) -> MTLTextureDescriptor {
         let textureDescriptor = MTLTextureDescriptor()
         textureDescriptor.storageMode = .shared
         textureDescriptor.usage = [.shaderWrite, .shaderRead]
@@ -40,29 +50,56 @@ class FFT {
         return textureDescriptor
     }
 
-    func execute(input: Matrix<Complex<Float>>, direction: FFTDirection = .forward, splitNormalization: Bool = false) -> Matrix<Complex<Float>> {
+    /// Queues the full algorithm on a MTLCommandBuffer
+    func queueCommands(
+        on commandBuffer: MTLCommandBuffer,
+        _ direction: FFTDirection = .forward,
+        input optionalInput: MTLTexture? = nil,
+        output optionalOutput: MTLTexture? = nil
+    ) -> MTLTexture {
 
-        self.startRecordingForDebugger()
+        let input = optionalInput ?? pingTexture
+        guard input !== pongTexture else {
+            fatalError("Cannot pass the pong texture as input")
+        }
 
-        let commandBuffer = commandQueue.makeCommandBuffer()!
+        guard input.pixelFormat == .rg32Float else {
+            fatalError("The pixel format of the input texture should be rg32Float")
+        }
 
-        input.fill(texture: pingTexture)
+        guard input.width == pingTexture.width && input.height == pingTexture.height else {
+            fatalError("Input texture dimensions do not correspond to FFT dimensions")
+        }
 
-        let (width, height) = (Float(input.shape.width), Float(input.shape.height))
+        let (width, height) = (Float(input.width), Float(input.height))
+        let (widthLog2, heightLog2) = (log2f(width), log2f(height))
 
-        let xIters = Int(log2f(width))
-        let yIters = Int(log2f(height))
+        guard widthLog2 == floorf(widthLog2) && heightLog2 == floorf(heightLog2) else {
+            fatalError("Width and height should be a power of 2")
+        }
+
+        let (xIters, yIters) = (Int(widthLog2), Int(heightLog2))
         let iters = xIters + yIters
+
+        let output = optionalOutput ?? ((iters - 1) % 2 == 0 ? pongTexture : pingTexture)
+        guard output !== ((iters - 1) % 2 == 0 ? pingTexture : pongTexture) else {
+            fatalError("Cannot pass this internal texture as output")
+        }
+
+        guard output.pixelFormat == .rg32Float else {
+            fatalError("The pixel format of the input texture should be rg32Float")
+        }
+
+        guard output.width == pingTexture.width && output.height == pingTexture.height else {
+            fatalError("Output texture dimensions do not correspond to FFT dimensions")
+        }
 
         for i in 0..<iters {
 
-            let input = (i % 2 == 0 ? pingTexture : pongTexture)
-            let output = (i % 2 == 1 ? pingTexture : pongTexture)
+            let iterInput = (i % 2 == 0 ? pingTexture : pongTexture)
+            let iterOutput = (i % 2 == 1 ? pingTexture : pongTexture)
 
-            let horizontal = i < xIters
-            let normalization: Float
             let forward: Bool
-
             switch direction {
             case .forward:
                 forward = true
@@ -70,38 +107,35 @@ class FFT {
                 forward = false
             }
 
-            switch (i, splitNormalization, direction) {
-            case (0, true, _):
-                normalization = 1.0 / sqrtf(width * height)
-            case (0, _, .inverse):
+            let normalization: Float
+            switch (i, direction) {
+            case (0, .inverse):
                 normalization = 1.0 / (width * height)
             default:
                 normalization = 1.0
             }
 
+            let horizontal = i < xIters
             // Each iteration increases the iteration width with a power of two
             let power: UInt = 1 << ((horizontal ? i : (i - xIters)) + 1)
-            
+
             self.queueCommand(
                 commandBuffer: commandBuffer,
-                input: input,
-                output: output,
+                input: (i == 0) ? input : iterInput,
+                output: (i == iters - 1) ? output : iterOutput,
                 horizontal: horizontal,
                 forward: forward,
                 normalization: normalization,
                 dim: horizontal ? UInt(width) : UInt(height),
                 power: power
             )
-
         }
 
-        commandBuffer.commit()
-        commandBuffer.waitUntilCompleted()
-
-        return Matrix<Complex<Float>>.copy(fromTexture: ((iters - 1) % 2 == 0 ? pongTexture : pingTexture))
+        return output
     }
 
-    func queueCommand(
+    /// Queues a single iteration of the command on a MTLCommandBuffer
+    private func queueCommand(
         commandBuffer: MTLCommandBuffer,
         input: MTLTexture,
         output: MTLTexture,
@@ -129,30 +163,15 @@ class FFT {
         computeEncoder.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
         computeEncoder.endEncoding()
     }
-
-    func startRecordingForDebugger() {
-        let sharedCapturer = MTLCaptureManager.shared()
-        let captureDescriptor = MTLCaptureDescriptor()
-        captureDescriptor.captureObject = commandQueue
-        captureDescriptor.destination = .developerTools
-        try? sharedCapturer.startCapture(with: captureDescriptor)
-    }
 }
 
-enum FFTDirection {
-    case forward
-    case inverse
-}
-
-struct FFTParameters {
+/// Struct that corresponds exactly with the parameters struct in the shader
+fileprivate struct FFTParameters {
 
     let normalization: Float
     let horizontal: Bool
     let forward: Bool
-
     let dim: simd_uint1
-
-    /// Will be `2^i` where `i` is the iteration
     let power: simd_uint1
 
     init(
@@ -168,4 +187,14 @@ struct FFTParameters {
         self.dim = simd_uint1(dim)
         self.power = simd_uint1(power)
     }
+}
+
+/// Use this method to enable the capturing of GPU debug information
+/// Only use on debug builds
+func SLSCaptureGPUDebugInformation(for commandQueue: MTLCommandQueue) {
+    let sharedCapturer = MTLCaptureManager.shared()
+    let captureDescriptor = MTLCaptureDescriptor()
+    captureDescriptor.captureObject = commandQueue
+    captureDescriptor.destination = .developerTools
+    try? sharedCapturer.startCapture(with: captureDescriptor)
 }

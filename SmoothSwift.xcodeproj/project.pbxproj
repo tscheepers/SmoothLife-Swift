@@ -16,12 +16,19 @@
 		766D1D1F25B99170002E89E6 /* MetalFFT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766D1D1E25B99170002E89E6 /* MetalFFT.swift */; };
 		766D1D3025B9BE48002E89E6 /* MetalFFTTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766D1D2825B9BD69002E89E6 /* MetalFFTTests.swift */; };
 		766D1D3525B9BE69002E89E6 /* MetalFFT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766D1D1E25B99170002E89E6 /* MetalFFT.swift */; };
+		767C0B7425BC427B0043CDF2 /* Matrix+FFT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767C0B7325BC427B0043CDF2 /* Matrix+FFT.swift */; };
+		767C0B7525BC427B0043CDF2 /* Matrix+FFT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767C0B7325BC427B0043CDF2 /* Matrix+FFT.swift */; };
+		767C0B7B25BC43290043CDF2 /* Matrix+Metal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767C0B7A25BC43290043CDF2 /* Matrix+Metal.swift */; };
+		767C0B7C25BC43290043CDF2 /* Matrix+Metal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767C0B7A25BC43290043CDF2 /* Matrix+Metal.swift */; };
+		767C0B8025BC44420043CDF2 /* Matrix+vDSP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767C0B7F25BC44420043CDF2 /* Matrix+vDSP.swift */; };
+		767C0B8125BC44420043CDF2 /* Matrix+vDSP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767C0B7F25BC44420043CDF2 /* Matrix+vDSP.swift */; };
 		7680787D25B5976500C8FD26 /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7680787C25B5976500C8FD26 /* Matrix.swift */; };
 		7680789325B5FE2A00C8FD26 /* Complex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7680789225B5FE2A00C8FD26 /* Complex.swift */; };
 		76884C0D25B708190088D5F1 /* SmoothLife.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76884C0C25B708190088D5F1 /* SmoothLife.swift */; };
 		76884C1025B70ABD0088D5F1 /* SmoothLife.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76884C0C25B708190088D5F1 /* SmoothLife.swift */; };
 		76884C1725B70CEE0088D5F1 /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7680787C25B5976500C8FD26 /* Matrix.swift */; };
 		76884C1A25B70CF20088D5F1 /* Complex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7680789225B5FE2A00C8FD26 /* Complex.swift */; };
+		768A3F3C25BC495B002E9B49 /* vDSPFFTTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 768A3F3B25BC495B002E9B49 /* vDSPFFTTests.swift */; };
 		76B91E862590FC2800AC8893 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76B91E852590FC2800AC8893 /* Metal.framework */; };
 		76B91E892590FE0400AC8893 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 76B91E882590FE0400AC8893 /* Shaders.metal */; };
 		76B91E8D259101D800AC8893 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 76B91E8C259101D800AC8893 /* LaunchScreen.storyboard */; };
@@ -59,6 +66,9 @@
 		766CDE0325BB3E33001BC993 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		766D1D1E25B99170002E89E6 /* MetalFFT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalFFT.swift; sourceTree = "<group>"; };
 		766D1D2825B9BD69002E89E6 /* MetalFFTTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalFFTTests.swift; sourceTree = "<group>"; };
+		767C0B7325BC427B0043CDF2 /* Matrix+FFT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Matrix+FFT.swift"; sourceTree = "<group>"; };
+		767C0B7A25BC43290043CDF2 /* Matrix+Metal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Matrix+Metal.swift"; sourceTree = "<group>"; };
+		767C0B7F25BC44420043CDF2 /* Matrix+vDSP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Matrix+vDSP.swift"; sourceTree = "<group>"; };
 		7680787C25B5976500C8FD26 /* Matrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
 		7680789225B5FE2A00C8FD26 /* Complex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Complex.swift; sourceTree = "<group>"; };
 		76884BF725B706140088D5F1 /* SmoothSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmoothSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -66,6 +76,7 @@
 		76884C0425B7062E0088D5F1 /* SmoothLifeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmoothLifeTests.swift; sourceTree = "<group>"; };
 		76884C0C25B708190088D5F1 /* SmoothLife.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmoothLife.swift; sourceTree = "<group>"; };
 		76884C1D25B7121D0088D5F1 /* Fixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fixtures.swift; sourceTree = "<group>"; };
+		768A3F3B25BC495B002E9B49 /* vDSPFFTTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = vDSPFFTTests.swift; sourceTree = "<group>"; };
 		76B91E852590FC2800AC8893 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		76B91E882590FE0400AC8893 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		76B91E8C259101D800AC8893 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -117,8 +128,6 @@
 			children = (
 				763C928E25ADB4F700E78004 /* Shaders.metal */,
 				763C929225ADB50300E78004 /* SmoothLifeRenderer.swift */,
-				7680787C25B5976500C8FD26 /* Matrix.swift */,
-				7680789225B5FE2A00C8FD26 /* Complex.swift */,
 				76884C0C25B708190088D5F1 /* SmoothLife.swift */,
 			);
 			path = SmoothLife;
@@ -142,9 +151,31 @@
 			path = MetalFFT;
 			sourceTree = "<group>";
 		};
+		767C0B7125BC424E0043CDF2 /* Numeric */ = {
+			isa = PBXGroup;
+			children = (
+				7680787C25B5976500C8FD26 /* Matrix.swift */,
+				7680789225B5FE2A00C8FD26 /* Complex.swift */,
+				767C0B7325BC427B0043CDF2 /* Matrix+FFT.swift */,
+				767C0B7A25BC43290043CDF2 /* Matrix+Metal.swift */,
+				767C0B7F25BC44420043CDF2 /* Matrix+vDSP.swift */,
+			);
+			path = Numeric;
+			sourceTree = "<group>";
+		};
+		767C0B7225BC425E0043CDF2 /* Numeric */ = {
+			isa = PBXGroup;
+			children = (
+				762A484F25B71CFD0084EBD4 /* MatrixTests.swift */,
+				768A3F3B25BC495B002E9B49 /* vDSPFFTTests.swift */,
+			);
+			path = Numeric;
+			sourceTree = "<group>";
+		};
 		76884BF825B706140088D5F1 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				767C0B7225BC425E0043CDF2 /* Numeric */,
 				76F6FFC025BADAA20073135F /* Fixtures */,
 				766D1D2725B9BD3C002E89E6 /* MetalFFT */,
 				76884C0325B7061C0088D5F1 /* SmoothLife */,
@@ -157,7 +188,6 @@
 			isa = PBXGroup;
 			children = (
 				76884C0425B7062E0088D5F1 /* SmoothLifeTests.swift */,
-				762A484F25B71CFD0084EBD4 /* MatrixTests.swift */,
 			);
 			path = SmoothLife;
 			sourceTree = "<group>";
@@ -209,6 +239,7 @@
 		76F9B5C22590CC4D000D403C /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				767C0B7125BC424E0043CDF2 /* Numeric */,
 				763EC6F625B8854700ABCDE7 /* MetalFFT */,
 				763C928D25ADB4E400E78004 /* SmoothLife */,
 				760F67D225ACAC33006DE2B7 /* GameOfLife */,
@@ -332,14 +363,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				767C0B7C25BC43290043CDF2 /* Matrix+Metal.swift in Sources */,
+				768A3F3C25BC495B002E9B49 /* vDSPFFTTests.swift in Sources */,
 				76884C1725B70CEE0088D5F1 /* Matrix.swift in Sources */,
 				762A485025B71CFD0084EBD4 /* MatrixTests.swift in Sources */,
 				766D1D3525B9BE69002E89E6 /* MetalFFT.swift in Sources */,
 				76F6FFCE25BADC9F0073135F /* Fixtures.swift in Sources */,
 				766D1D3025B9BE48002E89E6 /* MetalFFTTests.swift in Sources */,
+				767C0B8125BC44420043CDF2 /* Matrix+vDSP.swift in Sources */,
 				76884C1025B70ABD0088D5F1 /* SmoothLife.swift in Sources */,
 				76024F6F25BACEDC00EA7472 /* SmoothLifeTests.swift in Sources */,
 				76884C1A25B70CF20088D5F1 /* Complex.swift in Sources */,
+				767C0B7525BC427B0043CDF2 /* Matrix+FFT.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -358,6 +393,9 @@
 				763C929325ADB50300E78004 /* SmoothLifeRenderer.swift in Sources */,
 				76F9B5C42590CC4D000D403C /* AppDelegate.swift in Sources */,
 				763C928F25ADB4F700E78004 /* Shaders.metal in Sources */,
+				767C0B7B25BC43290043CDF2 /* Matrix+Metal.swift in Sources */,
+				767C0B7425BC427B0043CDF2 /* Matrix+FFT.swift in Sources */,
+				767C0B8025BC44420043CDF2 /* Matrix+vDSP.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -4,8 +4,6 @@ import XCTest
 class SmoothLifeTests: XCTestCase {
 
     func testFieldFromUpperLeftCords() throws {
-
-
         let field = SmoothLife.field(fromUpperLeftCoords: Fixtures.startStateCords, squareSize: 12, shape: (height: 64, width: 64))
         SLSAssertEqual(field, Fixtures.startState)
     }
@@ -22,7 +20,6 @@ class SmoothLifeTests: XCTestCase {
     }
 
     func testFieldFftComplex() {
-
         let field = SmoothLife.field(fromUpperLeftCoords: Fixtures.startStateCords, squareSize: 12, shape: (height: 64, width: 64))
         let fieldInFd = field.fft()
         SLSAssertEqual(fieldInFd, Fixtures.fftOnVirginField, accuracy: 0.001)

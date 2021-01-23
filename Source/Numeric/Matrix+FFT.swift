@@ -8,10 +8,11 @@ enum FFTImplementation {
     case metal
 }
 
-// MARK: - Double
-extension Matrix where T == Double {
 
-    func fft(_ direction: FFTDirection = .forward, implementation: FFTImplementation = .vDSP) -> Matrix<Complex<Double>> {
+// MARK: - Float
+extension Matrix where T == Float {
+
+    func fft(_ direction: FFTDirection = .forward, implementation: FFTImplementation = .vDSP) -> Matrix<Complex<Float>> {
         switch implementation {
         case .vDSP:
             return vdspFft(direction)
@@ -20,23 +21,19 @@ extension Matrix where T == Double {
         }
     }
 
-    func metalFft(_ direction: FFTDirection = .forward) -> Matrix<Complex<Double>> {
-        return self
-            .map({ Complex(Float($0), 0) })
-            .metalFft(direction)
-            .map({ Complex<Double>(Double($0.real), Double($0.imaginary)) })
+    func metalFft(_ direction: FFTDirection = .forward) -> Matrix<Complex<Float>> {
+        return self.complex.metalFft(direction)
     }
 
-    func vdspFft(_ direction: FFTDirection = .forward, reuseSetup setup: FFTSetupD? = nil) -> Matrix<Complex<Double>> {
+    func vdspFft(_ direction: FFTDirection = .forward, reuseSetup setup: FFTSetup? = nil) -> Matrix<Complex<Float>> {
         return self.complex.vdspFft(direction, reuseSetup: setup)
     }
 }
 
-
 // MARK: - Complex
-extension Matrix where T == Complex<Double> {
+extension Matrix where T == Complex<Float> {
 
-    func fft(_ direction: FFTDirection = .forward, implementation: FFTImplementation = .vDSP) -> Matrix<Complex<Double>> {
+    func fft(_ direction: FFTDirection = .forward, implementation: FFTImplementation = .vDSP) -> Matrix<T> {
         switch implementation {
         case .vDSP:
             return vdspFft(direction)
@@ -45,38 +42,34 @@ extension Matrix where T == Complex<Double> {
         }
     }
 
-    func metalFft(_ direction: FFTDirection = .forward) -> Matrix<Complex<Double>> {
-        return self
-            .map({ Complex(Float($0.real), Float($0.imaginary)) })
-            .metalFft(direction)
-            .map({ Complex<Double>(Double($0.real), Double($0.imaginary)) })
+    func metalFft(_ direction : FFTDirection = .forward) -> Matrix<T> {
+        let fftSetup = MetalFFT(size: self.shape)
+        return fftSetup.perform(on: self, direction)
     }
 
-    // MARK: Fast vDSP methods specific to Complex<Double>
+    func vdspFft(_ direction: FFTDirection = .forward, reuseSetup setup: FFTSetup? = nil) -> Matrix<T> {
 
-    func vdspFft(_ direction: FFTDirection = .forward, reuseSetup setup: FFTSetupD? = nil) -> Matrix<Complex<Double>> {
-
-        let reals = UnsafeMutableBufferPointer<Double>.allocate(capacity: n)
-        let imags =  UnsafeMutableBufferPointer<Double>.allocate(capacity: n)
+        let reals = UnsafeMutableBufferPointer<Float>.allocate(capacity: n)
+        let imags = UnsafeMutableBufferPointer<Float>.allocate(capacity: n)
 
         _ = reals.initialize(from: flat.map({ $0.real }))
         _ = imags.initialize(from: flat.map({ $0.imaginary }))
 
-        var complexBuffer = DSPDoubleSplitComplex(realp: reals.baseAddress!, imagp: imags.baseAddress!)
+        var complexBuffer = DSPSplitComplex(realp: reals.baseAddress!, imagp: imags.baseAddress!)
 
         // If no reusable fft setup is specified we'll create a one-off
         let fftSetup = setup ?? self.createVdspFftSetup()
-        let log2Width = UInt(log2(Double(width)))
-        let log2Height = UInt(log2(Double(height)))
+        let log2Width = UInt(log2f(Float(width)))
+        let log2Height = UInt(log2f(Float(height)))
 
-        vDSP_fft2d_zipD(fftSetup, &complexBuffer, 1, 0, log2Width, log2Height, direction.vdspFftDirection)
+        vDSP_fft2d_zip(fftSetup, &complexBuffer, 1, 0, log2Width, log2Height, direction.vdspFftDirection)
 
-        let flat = zip(reals, imags).map({ (real, imag) -> Complex<Double> in
+        let flat = zip(reals, imags).map({ (real, imag) -> T in
             switch (direction) {
             case .inverse:
-                return Complex<Double>(real / Double(n), imag / Double(n))
+                return Complex<Float>(real / Float(n), imag / Float(n))
             default:
-                return Complex<Double>(real, imag)
+                return Complex<Float>(real, imag)
             }
        })
 
@@ -85,7 +78,7 @@ extension Matrix where T == Complex<Double> {
             reals.deallocate()
 
             if setup == nil {
-                vDSP_destroy_fftsetupD(fftSetup)
+                vDSP_destroy_fftsetup(fftSetup)
             }
         }
 
@@ -93,16 +86,7 @@ extension Matrix where T == Complex<Double> {
     }
 }
 
-// MARK: - Complex Float
-extension Matrix where T == Complex<Float> {
-
-    func metalFft(_ direction : FFTDirection = .forward) -> Matrix<Complex<Float>> {
-        let fftSetup = MetalFFT(size: self.shape)
-        return fftSetup.perform(on: self, direction)
-    }
-
-}
-
+// MARK: - Extension to MetalFFT
 extension MetalFFT {
     func perform(on input: Matrix<Complex<Float>>, _ direction: FFTDirection = .forward) -> Matrix<Complex<Float>> {
 
@@ -139,13 +123,14 @@ extension FFTDirection {
     }
 }
 
+// MARK: - Extension for vDSP
 extension Matrix {
     /// Create a reference to an fftSetup object
-    /// You are resonsible for calling `vDSP_destroy_fftsetupD()` when it is no longer required
-    func createVdspFftSetup() -> FFTSetupD {
-        let log2Size = UInt(log2(Double(n)))
+    /// You are resonsible for calling `vDSP_destroy_fftsetup()` when it is no longer required
+    func createVdspFftSetup() -> FFTSetup {
+        let log2Size = UInt(log2(Float(n)))
 
-        guard let fftSetup = vDSP_create_fftsetupD(log2Size, FFTRadix(kFFTRadix2)) else {
+        guard let fftSetup = vDSP_create_fftsetup(log2Size, FFTRadix(kFFTRadix2)) else {
             fatalError("Could not initialize FFT Setup")
         }
 

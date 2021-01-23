@@ -17,12 +17,6 @@ struct Matrix<T> {
         self.flat = flat
     }
 
-    /// Returns a matrix filled with zeros
-    static func zeros(shape: (height: Int, width: Int)) -> Matrix<T> where T : AdditiveArithmetic {
-        let flat = [T](repeating: T.zero, count: shape.height * shape.width)
-        return Matrix<T>(shape: shape, flat: flat)
-    }
-
     /// Access the matrix using `matrix[x,y]`
     subscript(row: Int, col: Int) -> T {
         get {
@@ -80,17 +74,8 @@ extension Matrix: CustomDebugStringConvertible {
     }
 }
 
-// MARK: - Double
-extension Matrix where T == Double {
-
-    /// The sum of the matrix
-    var sum: T {
-        return flat.reduce(0.0, { $0 + $1 })
-    }
-
-    var complex: Matrix<Complex<T>> {
-        return self.map({ Complex<T>($0, 0.0) })
-    }
+// MARK: - Float
+extension Matrix where T == Float {
 
     func hardStep(_ boundary: T = 0.5) -> Matrix<T> {
         return self.map { (value) -> T in
@@ -111,6 +96,25 @@ extension Matrix where T == Double {
             }
             return value
         }
+    }
+}
+
+extension Matrix where T : FloatingPoint {
+
+    /// The sum of the matrix
+    var sum: T {
+        return flat.reduce(T.zero, { $0 + $1 })
+    }
+
+    /// Transform to complex matrix
+    var complex: Matrix<Complex<T>> {
+        return self.map { Complex<T>($0, T.zero) }
+    }
+
+    /// Returns a matrix filled with zeros
+    static func zeros(shape: (height: Int, width: Int)) -> Matrix<T> {
+        let flat = [T](repeating: T.zero, count: shape.height * shape.width)
+        return Matrix<T>(shape: shape, flat: flat)
     }
 
     /// Returns two grids in the style:
@@ -145,11 +149,6 @@ extension Matrix where T == Double {
 
 
 // MARK: - Complex
-extension Matrix where T == Complex<Double> {
-    var real: Matrix<Double> {
-        return self.map({ $0.real })
-    }
-}
 
 extension Matrix where T == Complex<Float> {
     var real: Matrix<Float> {

@@ -3,13 +3,6 @@ import Metal
 
 /// Easy integration with Metal for copying from Textures and filling textures with data from a matrix
 
-// MARK: - Double
-extension Matrix where T == Double {
-    func fill(texture: MTLTexture) {
-        self.map({ Float($0) }).fill(texture: texture)
-    }
-}
-
 // MARK: - Float
 extension Matrix where T == Float {
 

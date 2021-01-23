@@ -14,50 +14,50 @@ class Fixtures {
     ]
 
     /// A 64x64 field start state that should result in a nice glider
-    static let startState : [[Double]] = Fixtures.loadCSV(named: "StartState")
+    static let startState : [[Float]] = Fixtures.loadCSV(named: "StartState")
 
     /// A 64x64 smooth circle with an inner radius of 4.0
-    static let circleInnerRadius : [[Double]] = Fixtures.loadCSV(named: "CircleInnerRadius")
+    static let circleInnerRadius : [[Float]] = Fixtures.loadCSV(named: "CircleInnerRadius")
 
     /// FFT applied to the smooth circle with an inner radius of 4.0
-    static let effectiveCellKernelInFd : [[Double]] = Fixtures.loadCSV(named: "EffectiveCellKernelInFd")
+    static let effectiveCellKernelInFd : [[Float]] = Fixtures.loadCSV(named: "EffectiveCellKernelInFd")
 
     /// FFT applied to the start state field
-    static let fftOnVirginField : [[(Double, Double)]] = Fixtures.loadComplexCSV(named: "FftOnVirginField")
+    static let fftOnVirginField : [[(Float, Float)]] = Fixtures.loadComplexCSV(named: "FftOnVirginField")
 
     /// The result of applying the effectiveCell kernel to the virgin field
-    static let effectiveCellKernelAppliedToField : [[Double]] = Fixtures.loadCSV(named: "EffectiveCellKernelAppliedToField")
+    static let effectiveCellKernelAppliedToField : [[Float]] = Fixtures.loadCSV(named: "EffectiveCellKernelAppliedToField")
 
     /// The result of applying the transition function to M and N for the first iteration
-    static let transitionResult : [[Double]] = Fixtures.loadCSV(named: "TransitionResult")
+    static let transitionResult : [[Float]] = Fixtures.loadCSV(named: "TransitionResult")
 
     /// Randomly generated input to test FFT
-    static let fftTestInput : [[Double]] = Fixtures.loadCSV(named: "FftTestInput")
+    static let fftTestInput : [[Float]] = Fixtures.loadCSV(named: "FftTestInput")
 
     /// Randomly generated output to test FFT (generated with Numpy)
-    static let fftTestOutput : [[(Double, Double)]] = Fixtures.loadComplexCSV(named: "FftTestOutput")
+    static let fftTestOutput : [[(Float, Float)]] = Fixtures.loadComplexCSV(named: "FftTestOutput")
 
     /// Method to load data from CSV
-    static func loadCSV(named: String) -> [[Double]] {
+    static func loadCSV(named: String) -> [[Float]] {
 
         let url =  Bundle(for: Self.self).url(forResource: named, withExtension: "csv")
         let contents = try! String(contentsOf: url!)
 
         return contents
             .components(separatedBy: "\n")
-            .compactMap { $0 == "" ? nil : $0.components(separatedBy: ",").map { Double($0.trimmingCharacters(in: .whitespaces))! } }
+            .compactMap { $0 == "" ? nil : $0.components(separatedBy: ",").map { Float(Double($0.trimmingCharacters(in: .whitespaces))!) } }
     }
 
     /// Method to load complex data from CSV
-    static func loadComplexCSV(named: String) -> [[(Double, Double)]] {
+    static func loadComplexCSV(named: String) -> [[(Float, Float)]] {
         let url =  Bundle(for: Self.self).url(forResource: named, withExtension: "csv")
         let contents = try! String(contentsOf: url!)
 
         return contents
             .components(separatedBy: "\n")
-            .compactMap { $0 == "" ? nil : $0.components(separatedBy: ",").map { s -> (Double, Double) in
+            .compactMap { $0 == "" ? nil : $0.components(separatedBy: ",").map { s -> (Float, Float) in
                 let c = s.components(separatedBy: ";").map { $0.trimmingCharacters(in: .whitespaces) }
-                return (Double(c.first!)!, Double(c.last!)!)
+                return (Float(Double(c.first!)!), Float(Double(c.last!)!))
             } }
     }
 

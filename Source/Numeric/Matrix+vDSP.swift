@@ -3,6 +3,166 @@ import Accelerate
 
 /// Numeric calculation optimizations using vDSP (for the vDSP FFT code check Matrix+FFT.swift)
 
+// MARK: - Float
+extension Matrix where T == Float {
+
+    // PLUS
+    static func + (lhs: Matrix<T>, rhs: Matrix<T>) -> Matrix<T> {
+        assert(lhs.shape == rhs.shape, "Shapes invalid")
+        var result = Matrix.zeros(shape: lhs.shape)
+        rhs.flat.withUnsafeBufferPointer{ srcR in
+            lhs.flat.withUnsafeBufferPointer{ srcL in
+                result.flat.withUnsafeMutableBufferPointer{ dst in
+                    vDSP_vadd(srcR.baseAddress!, 1, srcL.baseAddress!, 1, dst.baseAddress!, 1, vDSP_Length(lhs.n))
+                }
+            }
+        }
+        return result
+    }
+    static func + (lhs: Matrix<T>, rhs: T) -> Matrix<T> {
+        var result = lhs
+        lhs.flat.withUnsafeBufferPointer{ src in
+            result.flat.withUnsafeMutableBufferPointer{ dst in
+                var scalar = rhs
+                vDSP_vsadd(src.baseAddress!, 1, &scalar, dst.baseAddress!, 1, vDSP_Length(lhs.n))
+            }
+        }
+        return result
+    }
+    static func + (lhs: T, rhs: Matrix<T>) -> Matrix<T> {
+        return rhs + lhs
+    }
+
+    // MINUS
+    static func - (lhs: Matrix<T>, rhs: Matrix<T>) -> Matrix<T> {
+        assert(lhs.shape == rhs.shape, "Shapes invalid")
+        var result = Matrix.zeros(shape: lhs.shape)
+        rhs.flat.withUnsafeBufferPointer{ srcR in
+            lhs.flat.withUnsafeBufferPointer{ srcL in
+                result.flat.withUnsafeMutableBufferPointer{ dst in
+                    vDSP_vsub(srcR.baseAddress!, 1, srcL.baseAddress!, 1, dst.baseAddress!, 1, vDSP_Length(lhs.n))
+                }
+            }
+        }
+        return result
+    }
+    static func - (lhs: Matrix<T>, rhs: T) -> Matrix<T> {
+        return lhs + (-rhs)
+    }
+    static func - (lhs: T, rhs: Matrix<T>) -> Matrix<T> {
+        var result = rhs
+        result.flat.withUnsafeMutableBufferPointer{ dst in
+            var scalar = lhs
+            let length = vDSP_Length(rhs.n)
+            vDSP_vneg(dst.baseAddress!, 1, dst.baseAddress!, 1, length)
+            vDSP_vsadd(dst.baseAddress!, 1, &scalar, dst.baseAddress!, 1, length)
+        }
+        return result
+    }
+
+    // TIMES
+    static func * (lhs: Matrix<T>, rhs: Matrix<T>) -> Matrix<T> {
+        assert(lhs.shape == rhs.shape, "Shapes invalid")
+        var result = Matrix.zeros(shape: lhs.shape)
+        rhs.flat.withUnsafeBufferPointer{ srcR in
+            lhs.flat.withUnsafeBufferPointer{ srcL in
+                result.flat.withUnsafeMutableBufferPointer{ dst in
+                    vDSP_vmul(srcR.baseAddress!, 1, srcL.baseAddress!, 1, dst.baseAddress!, 1, vDSP_Length(lhs.n))
+                }
+            }
+        }
+        return result
+    }
+    static func * (lhs: Matrix<T>, rhs: T) -> Matrix<T> {
+        var result = lhs
+        lhs.flat.withUnsafeBufferPointer{ src in
+            result.flat.withUnsafeMutableBufferPointer{ dst in
+                var scalar = rhs
+                vDSP_vsmul(src.baseAddress!, 1, &scalar, dst.baseAddress!, 1, vDSP_Length(lhs.n))
+            }
+        }
+        return result
+    }
+    static func * (lhs: T, rhs: Matrix<T>) -> Matrix<T> {
+        return rhs * lhs
+    }
+
+    // DIVIDE
+    static func / (lhs: Matrix<T>, rhs: Matrix<T>) -> Matrix<T> {
+        assert(lhs.shape == rhs.shape, "Shapes invalid")
+        var result = Matrix.zeros(shape: lhs.shape)
+        rhs.flat.withUnsafeBufferPointer{ srcR in
+            lhs.flat.withUnsafeBufferPointer{ srcL in
+                result.flat.withUnsafeMutableBufferPointer{ dst in
+                    vDSP_vdiv(srcR.baseAddress!, 1, srcL.baseAddress!, 1, dst.baseAddress!, 1, vDSP_Length(lhs.n))
+                }
+            }
+        }
+        return result
+    }
+    static func / (lhs: Matrix<T>, rhs: T) -> Matrix<T> {
+        var result = lhs
+        lhs.flat.withUnsafeBufferPointer{ src in
+            result.flat.withUnsafeMutableBufferPointer{ dst in
+                var scalar = rhs
+                vDSP_vsdiv(src.baseAddress!, 1, &scalar, dst.baseAddress!, 1, vDSP_Length(lhs.n))
+            }
+        }
+        return result
+    }
+    static func / (lhs: T, rhs: Matrix<T>) -> Matrix<T> {
+        var result = rhs
+        rhs.flat.withUnsafeBufferPointer{ src in
+            result.flat.withUnsafeMutableBufferPointer{ dst in
+                var scalar = lhs
+                vDSP_svdiv(&scalar, src.baseAddress!, 1, dst.baseAddress!, 1, vDSP_Length(rhs.n))
+            }
+        }
+        return result
+    }
+}
+
+/// Power function
+func pow(_ x: Matrix<Float>, power: Float) -> Matrix<Float> {
+    var result = x
+    x.flat.withUnsafeBufferPointer { src in
+        result.flat.withUnsafeMutableBufferPointer { dst in
+            if power == 2 {
+                vDSP_vsq(src.baseAddress!, 1, dst.baseAddress!, 1, vDSP_Length(x.width * x.height))
+            } else {
+                var size = Int32(x.width * x.height)
+                var exponent = power
+                vvpowsf(dst.baseAddress!, &exponent, src.baseAddress!, &size)
+            }
+        }
+    }
+    return result
+}
+
+/// Square root function
+func sqrt(_ x: Matrix<Float>) -> Matrix<Float> {
+    var result = x
+    x.flat.withUnsafeBufferPointer { src in
+        result.flat.withUnsafeMutableBufferPointer { dst in
+            var size = Int32(x.width * x.height)
+            vvsqrtf(dst.baseAddress!, src.baseAddress!, &size)
+        }
+    }
+    return result
+}
+
+/// Exponential function
+func exp(_ x: Matrix<Float>) -> Matrix<Float> {
+    var result = x
+    x.flat.withUnsafeBufferPointer { src in
+        result.flat.withUnsafeMutableBufferPointer { dst in
+            var size = Int32(x.width * x.height)
+            vvexpf(dst.baseAddress!, src.baseAddress!, &size)
+        }
+    }
+    return result
+}
+
 // MARK: - Double
 extension Matrix where T == Double {
 
@@ -73,7 +233,7 @@ extension Matrix where T == Double {
         }
         return result
     }
-    static func * (lhs: Matrix<T>, rhs: T) -> Matrix<T> where T == Double {
+    static func * (lhs: Matrix<T>, rhs: T) -> Matrix<T> {
         var result = lhs
         lhs.flat.withUnsafeBufferPointer{ src in
             result.flat.withUnsafeMutableBufferPointer{ dst in

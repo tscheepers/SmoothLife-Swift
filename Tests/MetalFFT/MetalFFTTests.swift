@@ -69,7 +69,7 @@ class MetalFFTTests: XCTestCase {
 
     func testFFT() throws {
 
-        let matrix = Matrix<Double>(shape: (16, 16), flat: Fixtures.fftTestInput.flatMap({ $0 }))
+        let matrix = Matrix<Float>(shape: (16, 16), flat: Fixtures.fftTestInput.flatMap({ $0 }))
 
         let metalFftResult = matrix.metalFft()
 
@@ -79,9 +79,9 @@ class MetalFFTTests: XCTestCase {
     func testFFTInverse() throws {
 
         let matrix = Matrix<Complex<Float>>(shape: (16, 16), flat: Fixtures.fftTestOutput.flatMap({ $0 })
-                                                .map({ Complex<Float>(Float($0.0), Float($0.1)) }) )
+                                                .map({ Complex($0.0, $0.1) }) )
 
-        let metalFffResult = matrix.metalFft(.inverse).map { Double($0.real) }
+        let metalFffResult = matrix.metalFft(.inverse).real
 
         SLSAssertEqual(metalFffResult, Fixtures.fftTestInput, accuracy: 0.001)
     }

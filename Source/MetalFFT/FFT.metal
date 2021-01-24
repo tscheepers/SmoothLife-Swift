@@ -3,7 +3,7 @@ using namespace metal;
 
 constant float TWO_PI = 6.283185307179586;
 
-struct Params {
+struct FFTParams {
     float normalization;
     bool horizontal;
     bool forward;
@@ -12,7 +12,7 @@ struct Params {
 };
 
 // Each time this kernel is executed we perform one of the total `log2(dim)` steps in one direction (horizontal or vertical)
-kernel void fft(constant Params& params [[buffer(0)]],
+kernel void fft(constant FFTParams& params [[buffer(0)]],
                 texture2d<float, access::read> current [[texture(0)]],
                 texture2d<float, access::write> next [[texture(1)]],
                 uint2 gid [[ thread_position_in_grid ]])

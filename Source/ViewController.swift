@@ -3,7 +3,7 @@ import Metal
 
 class ViewController: UIViewController {
 
-    var renderer: SmoothLifeRenderer!
+    var renderer: LifeRenderer!
 
     var metalLayer: CAMetalLayer!
 
@@ -12,11 +12,13 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let factory = SmoothLifeRendererFactory()
-        renderer = factory.createRenderer(
-            forSmoothLife: SmoothLife(shape: (height: 512, width: 512))
-        )
-        metalLayer = factory.createMetalLayer(frame: view.layer.frame)
+        let life = SmoothLifeMetal(shape: (1024, 1024))
+        //let life = SmoothLifevDSP(shape: (1024, 1024))
+        //let life = GameOfLife(shape: (1024, 1024))
+        
+        renderer = LifeRenderer(life: life)
+
+        metalLayer = renderer.createMetalLayer(frame: view.layer.frame)
         view.layer.addSublayer(metalLayer)
 
         timer = CADisplayLink(target: self, selector: #selector(gameloop))

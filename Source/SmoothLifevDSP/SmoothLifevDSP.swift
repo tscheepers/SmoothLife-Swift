@@ -1,7 +1,8 @@
 import Foundation
 import Accelerate
+import Metal
 
-class SmoothLife {
+class SmoothLifevDSP {
 
     /// The field containing the current state
     var field: Matrix<Float>
@@ -38,6 +39,9 @@ class SmoothLife {
     /// If you reuse a single FFTSetup object for multiple transforms the code will be more performant
     let fftSetup: FFTSetup
 
+    /// Texture to render the field onto
+    let texture: MTLTexture
+
     init(
         shape: (height: Int, width: Int) = (64, 64),
         birthInterval: (Float, Float) = (0.254, 0.312),
@@ -45,7 +49,8 @@ class SmoothLife {
         innerRadius: Float = 4.0,
         outerRadius: Float = 12.0,
         dt: Float = 0.1,
-        field: Matrix<Float>? = nil
+        field: Matrix<Float>? = nil,
+        device: MTLDevice = MTLCreateSystemDefaultDevice()!
     ) {
         self.field = field ?? Self.randomField(radius: Int(outerRadius), shape: shape)
         self.fftSetup = self.field.createVdspFftSetup()
@@ -57,6 +62,8 @@ class SmoothLife {
         self.dt = dt
 
         (self.effectiveCellKernel, self.neightborhoodKernel) = Self.kernels(shape: shape, innerRadius: innerRadius, outerRadius: outerRadius)
+
+        self.texture = device.makeTexture(descriptor: SLSTextureDescriptor(shape: shape))!
     }
 
     /// Reset the field and restart the simulation
@@ -65,7 +72,7 @@ class SmoothLife {
     }
 
     /// Perform a step and update the field
-    func step() {
+    func step() -> Matrix<Float> {
 
         // Execute convolution in the frequency domain
         let (M, N) = self.applyKernels()
@@ -75,6 +82,8 @@ class SmoothLife {
 
         // Update using smooth timesteps
         field = (field + dt * (S - field)).clamp()
+
+        return field
     }
 
     /// Apply convolution by multiplying in the frequency domain
@@ -161,5 +170,21 @@ class SmoothLife {
 
     deinit {
         vDSP_destroy_fftsetup(self.fftSetup)
+    }
+}
+
+extension SmoothLifevDSP : Life {
+
+    var device: MTLDevice {
+        return texture.device
+    }
+
+    func texture(forPresentationBy lifeRenderer: LifeRenderer) -> MTLTexture {
+        return texture
+    }
+
+    func lifeRenderer(_ renderer: LifeRenderer, isQueueingCommandsOnBuffer commandBuffer: MTLCommandBuffer) {
+        let result = step()
+        result.fill(texture: texture)
     }
 }

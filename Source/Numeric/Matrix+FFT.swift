@@ -25,6 +25,10 @@ extension Matrix where T == Float {
         return self.complex.metalFft(direction)
     }
 
+    func makeMetalFftTexture(_ direction : FFTDirection = .forward) -> MTLTexture {
+        return self.complex.makeMetalFftTexture(direction)
+    }
+
     func vdspFft(_ direction: FFTDirection = .forward, reuseSetup setup: FFTSetup? = nil) -> Matrix<Complex<Float>> {
         return self.complex.vdspFft(direction, reuseSetup: setup)
     }
@@ -43,7 +47,13 @@ extension Matrix where T == Complex<Float> {
     }
 
     func metalFft(_ direction : FFTDirection = .forward) -> Matrix<T> {
-        let fftSetup = MetalFFT(size: self.shape)
+        let fftSetup = MetalFFT(shape: self.shape)
+        let outputTexture = fftSetup.perform(on: self, direction)
+        return Matrix<Complex<Float>>.copy(fromTexture: outputTexture)
+    }
+
+    func makeMetalFftTexture(_ direction : FFTDirection = .forward) -> MTLTexture {
+        let fftSetup = MetalFFT(shape: self.shape)
         return fftSetup.perform(on: self, direction)
     }
 
@@ -87,28 +97,34 @@ extension Matrix where T == Complex<Float> {
 }
 
 // MARK: - Extension to MetalFFT
-extension MetalFFT {
-    func perform(on input: Matrix<Complex<Float>>, _ direction: FFTDirection = .forward) -> Matrix<Complex<Float>> {
+fileprivate extension MetalFFT {
 
+    func makeCommandBuffer() -> MTLCommandBuffer {
         let commandQueue = device.makeCommandQueue()!
 
         #if DEBUG
         SLSCaptureGPUDebugInformation(for: commandQueue)
         #endif
 
-        let commandBuffer = commandQueue.makeCommandBuffer()!
-        input.fill(texture: fallbackInputTexture)
+        return commandQueue.makeCommandBuffer()!
+    }
 
-        let resultTexture = queueCommands(on: commandBuffer, direction)
+    func perform(on input: Matrix<Complex<Float>>, _ direction: FFTDirection = .forward) -> MTLTexture {
+
+        let outputTexture = device.makeTexture(descriptor: Self.textureDescriptor(shape: self.shape))!
+        let commandBuffer = self.makeCommandBuffer()
+
+        input.fill(texture: fallbackInputTexture)
+        _ = queueCommands(on: commandBuffer, direction, output: outputTexture)
 
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
 
-        return Matrix<Complex<Float>>.copy(fromTexture: resultTexture)
+        return outputTexture
     }
 }
 
-extension FFTDirection {
+fileprivate extension FFTDirection {
     var vdspFftDirection: Int32 {
         return vdspDirection.fftDirection
     }

@@ -1,5 +1,6 @@
 import Foundation
 import Metal
+import simd
 
 /// Easy integration with Metal for copying from Textures and filling textures with data from a matrix
 
@@ -27,12 +28,25 @@ extension Matrix where T == Float {
 
     /// Fill a metal texture with the matrix
     func fill(texture: MTLTexture) {
-        texture.replace(
-            region: MTLRegionMake2D(0, 0, width, height),
-            mipmapLevel: 0,
-            withBytes: flat,
-            bytesPerRow: width * MemoryLayout<T>.stride
-        )
+
+        switch texture.pixelFormat {
+        case .r32Float:
+            texture.replace(
+                region: MTLRegionMake2D(0, 0, width, height),
+                mipmapLevel: 0,
+                withBytes: flat,
+                bytesPerRow: width * MemoryLayout<T>.stride
+            )
+        case .rg32Float:
+            texture.replace(
+                region: MTLRegionMake2D(0, 0, width, height),
+                mipmapLevel: 0,
+                withBytes: flat.map({ SIMD2<Float>($0, 0.0) }),
+                bytesPerRow: width * MemoryLayout<SIMD2<Float>>.stride
+            )
+        default:
+            fatalError("Can not fill a texture with this pixelformat")
+        }
     }
 }
 

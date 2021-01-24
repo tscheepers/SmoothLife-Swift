@@ -25,27 +25,30 @@ class MetalFFT {
         return pingTexture
     }
 
-    init(size: (height: Int, width: Int)) {
-        let device = MTLCreateSystemDefaultDevice()!
+    var shape: (height: Int, width: Int) {
+        return (self.pingTexture.height, self.pongTexture.width)
+    }
+
+    init(shape: (height: Int, width: Int), device: MTLDevice = MTLCreateSystemDefaultDevice()!) {
         
         let defaultLibrary = device.makeDefaultLibrary()!
         let shader = defaultLibrary.makeFunction(name: "fft")!
 
         self.parameterBuffer = device.makeBuffer(length: MemoryLayout<FFTParameters>.stride, options: [])!
         self.computePipelineState = try! device.makeComputePipelineState(function: shader)
-        self.pingTexture = device.makeTexture(descriptor: Self.textureDescriptor(size: size))!
-        self.pongTexture = device.makeTexture(descriptor: Self.textureDescriptor(size: size))!
+        self.pingTexture = device.makeTexture(descriptor: Self.textureDescriptor(shape: shape))!
+        self.pongTexture = device.makeTexture(descriptor: Self.textureDescriptor(shape: shape))!
 
     }
 
     /// Describes a valid texture that can be used with this algorithm
-    private static func textureDescriptor(size: (height: Int, width: Int)) -> MTLTextureDescriptor {
+    static func textureDescriptor(shape: (height: Int, width: Int)) -> MTLTextureDescriptor {
         let textureDescriptor = MTLTextureDescriptor()
         textureDescriptor.storageMode = .shared
         textureDescriptor.usage = [.shaderWrite, .shaderRead]
         textureDescriptor.pixelFormat = .rg32Float
-        textureDescriptor.width = size.width
-        textureDescriptor.height = size.height
+        textureDescriptor.width = shape.width
+        textureDescriptor.height = shape.height
         textureDescriptor.depth = 1
         return textureDescriptor
     }
@@ -154,11 +157,7 @@ class MetalFFT {
         var params = FFTParameters(horizontal, forward, normalization, dim, power)
         computeEncoder.setBytes(&params, length: MemoryLayout<FFTParameters>.stride, index: 0)
 
-        let threadSize = 16 // computePipelineState.threadExecutionWidth
-        let threadsPerThreadgroup = MTLSizeMake(threadSize, threadSize, 1) // computePipelineState.maxTotalThreadsPerThreadgroup
-        let horizontalThreadgroupCount = input.width / threadsPerThreadgroup.width + 1
-        let verticalThreadgroupCount = output.width / threadsPerThreadgroup.height + 1
-        let threadgroupsPerGrid = MTLSizeMake(horizontalThreadgroupCount, verticalThreadgroupCount, 1)
+        let (threadgroupsPerGrid, threadsPerThreadgroup) = SLSThreads(for: output, and: computePipelineState)
 
         computeEncoder.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
         computeEncoder.endEncoding()
@@ -187,14 +186,4 @@ fileprivate struct FFTParameters {
         self.dim = simd_uint1(dim)
         self.power = simd_uint1(power)
     }
-}
-
-/// Use this method to enable the capturing of GPU debug information
-/// Only use on debug builds
-func SLSCaptureGPUDebugInformation(for commandQueue: MTLCommandQueue) {
-    let sharedCapturer = MTLCaptureManager.shared()
-    let captureDescriptor = MTLCaptureDescriptor()
-    captureDescriptor.captureObject = commandQueue
-    captureDescriptor.destination = .developerTools
-    try? sharedCapturer.startCapture(with: captureDescriptor)
 }

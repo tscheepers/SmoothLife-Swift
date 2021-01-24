@@ -67,6 +67,7 @@
 		762FE36E25B7883A004C6E43 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		763C928E25ADB4F700E78004 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		763EC6FF25B88C8400ABCDE7 /* FFT.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = FFT.metal; sourceTree = "<group>"; };
+		7651D33725BDB8400046FB63 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		766CDE0325BB3E33001BC993 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		766D1D1E25B99170002E89E6 /* MetalFFT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalFFT.swift; sourceTree = "<group>"; };
 		766D1D2825B9BD69002E89E6 /* MetalFFTTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalFFTTests.swift; sourceTree = "<group>"; };
@@ -244,6 +245,7 @@
 		76F9B5B72590CC4D000D403C = {
 			isa = PBXGroup;
 			children = (
+				7651D33725BDB8400046FB63 /* LICENSE */,
 				762FE36E25B7883A004C6E43 /* README.md */,
 				76F9B5C22590CC4D000D403C /* Source */,
 				76884BF825B706140088D5F1 /* Tests */,

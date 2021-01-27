@@ -138,6 +138,13 @@ class LifeRenderer {
         metalLayer.framebufferOnly = true
         metalLayer.contentsScale = UIScreen.main.scale
         metalLayer.frame = frame
+
+        // Check for square texture, make sure it is not streched
+        let texture = self.life.texture(forPresentationBy: self)
+        if texture.width == texture.height {
+            metalLayer.frame = CGRect(x: -(frame.height - frame.width) / 2, y: 0, width: frame.height, height: frame.height)
+        }
+
         return metalLayer
     }
 }

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		76024F6F25BACEDC00EA7472 /* SmoothLifevDSPTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76884C0425B7062E0088D5F1 /* SmoothLifevDSPTests.swift */; };
 		760F67D025AC902E006DE2B7 /* GameOfLife.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760F67CF25AC902E006DE2B7 /* GameOfLife.swift */; };
+		7614F64925C17134002722A0 /* SelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7614F64825C17134002722A0 /* SelectionViewController.swift */; };
 		762A485025B71CFD0084EBD4 /* MatrixTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762A484F25B71CFD0084EBD4 /* MatrixTests.swift */; };
 		763C928F25ADB4F700E78004 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 763C928E25ADB4F700E78004 /* Shaders.metal */; };
 		763EC70025B88C8400ABCDE7 /* FFT.metal in Sources */ = {isa = PBXBuildFile; fileRef = 763EC6FF25B88C8400ABCDE7 /* FFT.metal */; };
@@ -47,7 +48,7 @@
 		76F6FFF825BAEC2A0073135F /* FftTestInput.csv in Resources */ = {isa = PBXBuildFile; fileRef = 76F6FFF425BAEB7F0073135F /* FftTestInput.csv */; };
 		76F6FFFE25BAECFF0073135F /* FftTestOutput.csv in Resources */ = {isa = PBXBuildFile; fileRef = 76F6FFFD25BAECFF0073135F /* FftTestOutput.csv */; };
 		76F9B5C42590CC4D000D403C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F9B5C32590CC4D000D403C /* AppDelegate.swift */; };
-		76F9B5C82590CC4D000D403C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F9B5C72590CC4D000D403C /* ViewController.swift */; };
+		76F9B5C82590CC4D000D403C /* RendererViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F9B5C72590CC4D000D403C /* RendererViewController.swift */; };
 		76F9B5CD2590CC4E000D403C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 76F9B5CC2590CC4E000D403C /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -63,6 +64,7 @@
 
 /* Begin PBXFileReference section */
 		760F67CF25AC902E006DE2B7 /* GameOfLife.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOfLife.swift; sourceTree = "<group>"; };
+		7614F64825C17134002722A0 /* SelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionViewController.swift; sourceTree = "<group>"; };
 		762A484F25B71CFD0084EBD4 /* MatrixTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixTests.swift; sourceTree = "<group>"; };
 		762FE36E25B7883A004C6E43 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		763C928E25ADB4F700E78004 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
@@ -86,6 +88,7 @@
 		76B91E852590FC2800AC8893 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		76B91E882590FE0400AC8893 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		76B91E8C259101D800AC8893 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		76D6387F25C17A6700493A81 /* Example.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Example.gif; sourceTree = "<group>"; };
 		76E7F8B625BD707C00FD790B /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		76E7F8BE25BD9C1400FD790B /* LifeRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifeRenderer.swift; sourceTree = "<group>"; };
 		76E7F8CF25BDA6EA00FD790B /* Metal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Metal.swift; sourceTree = "<group>"; };
@@ -99,7 +102,7 @@
 		76F6FFFD25BAECFF0073135F /* FftTestOutput.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = FftTestOutput.csv; sourceTree = "<group>"; };
 		76F9B5C02590CC4D000D403C /* SmoothSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmoothSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76F9B5C32590CC4D000D403C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		76F9B5C72590CC4D000D403C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		76F9B5C72590CC4D000D403C /* RendererViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RendererViewController.swift; sourceTree = "<group>"; };
 		76F9B5CC2590CC4E000D403C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		76F9B5D12590CC4E000D403C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -222,6 +225,7 @@
 			children = (
 				763C928E25ADB4F700E78004 /* Shaders.metal */,
 				76E7F8BE25BD9C1400FD790B /* LifeRenderer.swift */,
+				76F9B5C72590CC4D000D403C /* RendererViewController.swift */,
 			);
 			path = Renderer;
 			sourceTree = "<group>";
@@ -245,6 +249,7 @@
 		76F9B5B72590CC4D000D403C = {
 			isa = PBXGroup;
 			children = (
+				76D6387F25C17A6700493A81 /* Example.gif */,
 				7651D33725BDB8400046FB63 /* LICENSE */,
 				762FE36E25B7883A004C6E43 /* README.md */,
 				76F9B5C22590CC4D000D403C /* Source */,
@@ -273,7 +278,7 @@
 				763C928D25ADB4E400E78004 /* SmoothLifevDSP */,
 				760F67D225ACAC33006DE2B7 /* GameOfLifeMetal */,
 				76F9B5C32590CC4D000D403C /* AppDelegate.swift */,
-				76F9B5C72590CC4D000D403C /* ViewController.swift */,
+				7614F64825C17134002722A0 /* SelectionViewController.swift */,
 				76F9B5CC2590CC4E000D403C /* Assets.xcassets */,
 				76F9B5D12590CC4E000D403C /* Info.plist */,
 				76B91E8C259101D800AC8893 /* LaunchScreen.storyboard */,
@@ -415,11 +420,12 @@
 			files = (
 				76884C0D25B708190088D5F1 /* SmoothLifevDSP.swift in Sources */,
 				7680789325B5FE2A00C8FD26 /* Complex.swift in Sources */,
+				7614F64925C17134002722A0 /* SelectionViewController.swift in Sources */,
 				7680787D25B5976500C8FD26 /* Matrix.swift in Sources */,
 				760F67D025AC902E006DE2B7 /* GameOfLife.swift in Sources */,
 				768A3F4D25BC91ED002E9B49 /* SmoothLifeMetal.swift in Sources */,
 				76B91E892590FE0400AC8893 /* Shaders.metal in Sources */,
-				76F9B5C82590CC4D000D403C /* ViewController.swift in Sources */,
+				76F9B5C82590CC4D000D403C /* RendererViewController.swift in Sources */,
 				763EC70025B88C8400ABCDE7 /* FFT.metal in Sources */,
 				76E7F8D025BDA6EA00FD790B /* Metal.swift in Sources */,
 				76E7F8B725BD707C00FD790B /* Shaders.metal in Sources */,

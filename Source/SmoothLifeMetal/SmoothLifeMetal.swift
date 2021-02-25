@@ -94,7 +94,7 @@ class SmoothLifeMetal {
         self.complexMultiplicationPipelineState = try! device.makeComputePipelineState(function: defaultLibrary.makeFunction(name: "complex_multiplication")!)
         self.transitionPipelineState = try! device.makeComputePipelineState(function: defaultLibrary.makeFunction(name: "transition")!)
 
-        self.parameterBuffer = device.makeBuffer(length: MemoryLayout<TransitionParamters>.stride, options: [])!
+        self.parameterBuffer = device.makeBuffer(length: MemoryLayout<TransitionParameters>.stride, options: [])!
     }
 
     /// Provides the required kernels in the frequency domain
@@ -144,8 +144,8 @@ class SmoothLifeMetal {
         computeEncoder.setTexture(field, index: 2)
         computeEncoder.setTexture(nextField, index: 3)
 
-        var params = TransitionParamters(b1: birthInterval.0, b2: birthInterval.1, d1: deathInterval.0, d2: deathInterval.1, dt: dt)
-        computeEncoder.setBytes(&params, length: MemoryLayout<TransitionParamters>.stride, index: 0)
+        var params = TransitionParameters(b1: birthInterval.0, b2: birthInterval.1, d1: deathInterval.0, d2: deathInterval.1, dt: dt)
+        computeEncoder.setBytes(&params, length: MemoryLayout<TransitionParameters>.stride, index: 0)
 
         let (threadgroupsPerGrid, threadsPerThreadgroup) = SLSThreads(for: field, and: complexMultiplicationPipelineState)
 
@@ -170,7 +170,7 @@ class SmoothLifeMetal {
 }
 
 /// Struct that corresponds exactly with the parameters struct in the shader
-fileprivate struct TransitionParamters {
+fileprivate struct TransitionParameters {
     let b1: Float
     let b2: Float
     let d1: Float
